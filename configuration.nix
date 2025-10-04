@@ -116,6 +116,7 @@
     gnome-tweaks
     neovim
     wl-clipboard
+    unzip
     fastfetch
     
     # Hyprland
