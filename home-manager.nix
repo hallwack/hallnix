@@ -33,15 +33,15 @@ in
     enable = true;
     settings = {
       add_newline = false;
-      format = "[](0xd65d0e)$os$username[](bg:0xd79921 fg:0xd65d0e)$directory[](fg:0xd79921 bg:0x689d6a)$git_branch$git_status[](fg:0x689d6a bg:0x458588)$c$bun$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:0x458588 bg:0x665c54)$docker_context$conda[](fg:0x665c54 bg:0x3c3836)$time[ ](fg:0x3c3836)$line_break$character";
+      format = "[](#D65D0E)$os$username[](bg:#D79921 fg:#D65D0E)$directory[](fg:#D79921 bg:#689D6A)$git_branch$git_status[](fg:#689D6A bg:#458588)$c$bun$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:#458588 bg:#665C54)$docker_context$conda[](fg:#665C54 bg:#3C3836)$time[ ](fg:#3C3836)$line_break$character";
       username = {
         format = "[ $user ]($style)";
         show_always = true;
-        style_root = "bg:0xd65d0e fg:0xfbf1c7";
-        style_user = "bg:0xd65d0e fg:0xfbf1c7";
+        style_root = "bg:#D65D0E fg:#FBF1C7";
+        style_user = "bg:#D65D0E fg:#FBF1C7";
       };
       directory = {
-        style = "fg:0xfbf1c7 bg:0xd79921";
+        style = "fg:#FBF1C7 bg:#D79921";
         format = "[ $path ]($style)";
         truncation_length = 5;
         truncation_symbol = "…/";
@@ -55,49 +55,49 @@ in
       };
       git_branch = {
         symbol = "";
-        style = "bg:0x689d6a";
-        format = "[[ $symbol $branch ](fg:0xfbf1c7 bg:0x689d6a)]($style)";
+        style = "bg:#689D6A";
+        format = "[[ $symbol $branch ](fg:#FBF1C7 bg:#689D6A)]($style)";
       };
       git_status = {
-        style = "bg:0x689d6a";
-        format = "[[($all_status$ahead_behind )](fg:0xfbf1c7 bg:0x689d6a)]($style)";
+        style = "bg:#689D6A";
+        format = "[[($all_status$ahead_behind )](fg:#FBF1C7 bg:#689D6A)]($style)";
         ahead = "⇡\${count}";
         diverged = "⇕⇡\${ahead_count}⇣\${behind_count}";
         behind = "⇣\${count}";
       };
       nodejs = {
         symbol = "";
-        style = "bg:0x458588";
-        format = "[[ $symbol( $version) ](fg:0xfbf1c7 bg:0x458588)]($style)";
+        style = "bg:#458588";
+        format = "[[ $symbol( $version) ](fg:#FBF1C7 bg:#458588)]($style)";
       };
       rust = {
         symbol = "";
-        style = "bg:0x458588";
-        format = "[[ $symbol( $version) ](fg:0xfbf1c7 bg:0x458588)]($style)";
+        style = "bg:#458588";
+        format = "[[ $symbol( $version) ](fg:#FBF1C7 bg:#458588)]($style)";
       };
       python = {
         symbol = "";
-        style = "bg:0x458588";
-        format = "[[ $symbol( $version) ](fg:0xfbf1c7 bg:0x458588)]($style)";
+        style = "bg:#458588";
+        format = "[[ $symbol( $version) ](fg:#FBF1C7 bg:#458588)]($style)";
       };
       docker_context = {
         symbol = "";
-        style = "bg:0x665c54";
-        format = "[[ $symbol( $context) ](fg:0x83a598 bg:0x665c54)]($style)";
+        style = "bg:#665C54";
+        format = "[[ $symbol( $context) ](fg:#83A598 bg:#665C54)]($style)";
       };
       time = {
         disabled = false;
         time_format = "%R";
-        style = "bg:0x3c3836";
-        format = "[[  $time ](fg:0xfbf1c7 bg:0x3c3836)]($style)";
+        style = "bg:#3C3836";
+        format = "[[  $time ](fg:#FBF1C7 bg:#3C3836)]($style)";
       };
       line_break.disabled = false;
       character = {
         disabled = false;
-        success_symbol = "[](bold fg:0x98971a) ";
-        error_symbol = "[](bold fg:0xcc241d) ";
-        vimcmd_symbol = "[](bold fg:0x98971a) ";
-        vimcmd_visual_symbol = "[](bold fg:0xd79921) ";
+        success_symbol = "[](bold fg:#98971A) ";
+        error_symbol = "[](bold fg:#CC241D) ";
+        vimcmd_symbol = "[](bold fg:#98971A) ";
+        vimcmd_visual_symbol = "[](bold fg:#D79921) ";
       };
     };
   };
