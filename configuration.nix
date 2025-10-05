@@ -1,14 +1,16 @@
 # Edit this configuration file to define what should be installed on
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
-{ config, lib, pkgs, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -21,7 +23,7 @@
   networking.hostName = "hallnet"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
 
   # Set your time zone.
   time.timeZone = "Asia/Jakarta";
@@ -41,7 +43,7 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  services.udev.packages = with pkgs; [ gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [gnome-settings-daemon pcsc-tools];
   services.xserver = {
     displayManager = {
       gdm = {
@@ -53,15 +55,16 @@
     desktopManager.gnome.enable = true;
   };
 
+  programs.dconf.enable = true;
+
   programs.hyprland = {
     enable = true;
-    withUWSM = true;
     xwayland.enable = true;
   };
-  
+
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
-  # services.xserver.xkb.options = "eurosign:e,caps:escape";
+  services.xserver.xkb.options = "caps:escape";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -79,27 +82,44 @@
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
 
-  # Bluetooth
+  # Enable Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = false;
   services.blueman.enable = true;
 
+  # Enable NFC
+  services.pcscd = {
+    enable = true;
+    plugins = with pkgs; [ccid pcsc-tools];
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   programs.zsh.enable = true;
-  environment.shells = with pkgs; [ zsh ];
+  environment.shells = with pkgs; [zsh];
   users.users.hallwack = {
     isNormalUser = true;
-    extraGroups = [ "networkManager" "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = ["networkManager" "wheel" "pcscd"]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
-      gnomeExtensions.dock-from-dash
+      gnomeExtensions.just-perfection
+      gnomeExtensions.dash-to-dock
     ];
     shell = pkgs.zsh;
   };
 
+  programs.direnv.enable = true;
+  programs.direnv.nix-direnv.enable = true;
+
+  programs.nix-ld.enable = true;
+
   nixpkgs.config.allowUnfree = true;
 
   programs.firefox.enable = true;
+
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryPackage = lib.mkForce pkgs.pinentry-gnome3;
+  };
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
@@ -117,8 +137,9 @@
     neovim
     wl-clipboard
     unzip
+    usbutils
     fastfetch
-    
+
     # Hyprland
     waybar
     rofi-wayland
@@ -133,7 +154,7 @@
   ];
 
   # Flakes
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -178,4 +199,3 @@
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "25.05"; # Did you read the comment?
 }
-
