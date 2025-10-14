@@ -4,7 +4,7 @@
   ...
 }: {
   imports = [
-    ./programs
+    ../programs
   ];
 
   home = {
