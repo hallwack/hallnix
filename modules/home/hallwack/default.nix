@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }: {
   imports = [
@@ -9,7 +10,7 @@
 
   home = {
     username = "hallwack";
-    homeDirectory = "/home/hallwack";
+    homeDirectory = lib.mkDefault "/home/hallwack";
     stateVersion = "25.05";
   };
 
