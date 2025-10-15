@@ -92,13 +92,15 @@
     enable = true;
     plugins = with pkgs; [ccid pcsc-tools];
   };
+  boot.blacklistedKernelModules = ["nfc" "pn533" "pn533_usb"];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   programs.zsh.enable = true;
   environment.shells = with pkgs; [zsh];
+  users.groups.plugdev = {};
   users.users.hallwack = {
     isNormalUser = true;
-    extraGroups = ["networkManager" "wheel" "pcscd"]; # Enable ‘sudo’ for the user.
+    extraGroups = ["networkManager" "wheel" "pcscd" "plugdev"]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
       gnomeExtensions.just-perfection
@@ -141,6 +143,8 @@
     fastfetch
 
     # Hyprland
+    hyprpaper
+    hyprlock
     waybar
     rofi-wayland
     mako
