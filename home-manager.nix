@@ -9,6 +9,11 @@
   configs = {
     nvim = "nvim";
     kitty = "kitty";
+    hyprland = "hyprland";
+    ghostty = "ghostty";
+    rofi = "rofi";
+    waybar = "waybar";
+    mako = "mako";
   };
 in {
   home.username = "hallwack";
@@ -368,72 +373,74 @@ in {
     zoxide
     bat
     dbeaver-bin
+    brightnessctl
+    playerctl
 
     pass
     spotify
   ];
 
-  wayland.windowManager.hyprland = {
-    enable = true;
-    settings = {
-      monitor = ",1920x1080@60,auto,1";
-
-      env = ["XCURSOR_THEME,Adawaita" "XCURSOR_SIZE,24"];
-
-      input = {
-        follow_mouse = 2;
-        touchpad = {
-          natural_scroll = true;
-        };
-      };
-
-      cursor = {
-        no_warps = true;
-      };
-
-      "$mainMod" = "SUPER";
-
-      bind = [
-        "$mainMod, T, exec, kitty"
-        "$mainMod, C, killactive"
-        "$mainMod, M, exit"
-        "$mainMod, E, exec, nautilus"
-        "$mainMod, V, togglefloating"
-        "$mainMod, SPACE, exec, rofi -show drun"
-        "$mainMod, P, pseudo"
-        "$mainMod, B, exec, brave"
-        "$mainMod, s, togglesplit"
-        "$mainMod, h, movefocus, l"
-        "$mainMod, l, movefocus, r"
-        "$mainMod, k, movefocus, u"
-        "$mainMod, j, movefocus, d"
-        "$mainMod, 1, workspace, 1"
-        "$mainMod, 2, workspace, 2"
-        "$mainMod, 3, workspace, 3"
-        "$mainMod, 4, workspace, 4"
-        "$mainMod, 5, workspace, 5"
-        "$mainMod, 6, workspace, 6"
-        "$mainMod SHIFT, 1, movetoworkspace, 1"
-        "$mainMod SHIFT, 2, movetoworkspace, 2"
-        "$mainMod SHIFT, 3, movetoworkspace, 3"
-        "$mainMod SHIFT, 4, movetoworkspace, 4"
-        "$mainMod SHIFT, 5, movetoworkspace, 5"
-        "$mainMod SHIFT, 6, movetoworkspace, 6"
-        "$mainMod, mouse_down, workspace, e+1"
-        "$mainMod, mouse_up, workspace, e-1"
-        "$mainMod, F, fullscreen"
-        "ALT, TAB, cyclenext"
-        "ALT, TAB, bringactivetotop"
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 1%+"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"
-      ];
-
-      bindm = [
-        "$mainMod, mouse:272, movewindow"
-        "$mainMod, mouse:273, resizewindow"
-      ];
-    };
-  };
+  # wayland.windowManager.hyprland = {
+  #   enable = true;
+  #   settings = {
+  #     monitor = ",1920x1080@60,auto,1";
+  #
+  #     env = ["XCURSOR_THEME,Adawaita" "XCURSOR_SIZE,24"];
+  #
+  #     input = {
+  #       follow_mouse = 2;
+  #       touchpad = {
+  #         natural_scroll = true;
+  #       };
+  #     };
+  #
+  #     cursor = {
+  #       no_warps = true;
+  #     };
+  #
+  #     "$mainMod" = "SUPER";
+  #
+  #     bind = [
+  #       "$mainMod, T, exec, kitty"
+  #       "$mainMod, C, killactive"
+  #       "$mainMod, M, exit"
+  #       "$mainMod, E, exec, nautilus"
+  #       "$mainMod, V, togglefloating"
+  #       "$mainMod, SPACE, exec, rofi -show drun"
+  #       "$mainMod, P, pseudo"
+  #       "$mainMod, B, exec, brave"
+  #       "$mainMod, s, togglesplit"
+  #       "$mainMod, h, movefocus, l"
+  #       "$mainMod, l, movefocus, r"
+  #       "$mainMod, k, movefocus, u"
+  #       "$mainMod, j, movefocus, d"
+  #       "$mainMod, 1, workspace, 1"
+  #       "$mainMod, 2, workspace, 2"
+  #       "$mainMod, 3, workspace, 3"
+  #       "$mainMod, 4, workspace, 4"
+  #       "$mainMod, 5, workspace, 5"
+  #       "$mainMod, 6, workspace, 6"
+  #       "$mainMod SHIFT, 1, movetoworkspace, 1"
+  #       "$mainMod SHIFT, 2, movetoworkspace, 2"
+  #       "$mainMod SHIFT, 3, movetoworkspace, 3"
+  #       "$mainMod SHIFT, 4, movetoworkspace, 4"
+  #       "$mainMod SHIFT, 5, movetoworkspace, 5"
+  #       "$mainMod SHIFT, 6, movetoworkspace, 6"
+  #       "$mainMod, mouse_down, workspace, e+1"
+  #       "$mainMod, mouse_up, workspace, e-1"
+  #       "$mainMod, F, fullscreen"
+  #       "ALT, TAB, cyclenext"
+  #       "ALT, TAB, bringactivetotop"
+  #       ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 1%+"
+  #       ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"
+  #     ];
+  #
+  #     bindm = [
+  #       "$mainMod, mouse:272, movewindow"
+  #       "$mainMod, mouse:273, resizewindow"
+  #     ];
+  #   };
+  # };
 
   gtk = {
     enable = true;
