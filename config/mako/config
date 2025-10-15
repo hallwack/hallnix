@@ -1,0 +1,10 @@
+layer=top
+background-color=#282828
+width=400
+height=180
+border-size=0
+border-radius=4
+padding=12
+icons=1
+default-timeout=3000
+font=Geist Mono Nerd Font 10
