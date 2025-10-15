@@ -14,11 +14,31 @@
     rofi = "rofi";
     waybar = "waybar";
     mako = "mako";
+    swaync = "swaync";
   };
 in {
   home.username = "hallwack";
   home.homeDirectory = "/home/hallwack";
   home.stateVersion = "25.05";
+
+  home.packages = with pkgs; [
+    docker
+    ripgrep
+    nodejs
+    rustup
+    gcc
+    vscode
+    ghostty
+    starship
+    zoxide
+    bat
+    dbeaver-bin
+    brightnessctl
+    playerctl
+
+    pass
+    spotify
+  ];
 
   dconf.settings = {
     "org/gnome/desktop/input-sources" = {
@@ -360,25 +380,6 @@ in {
       recursive = true;
     })
     configs;
-
-  home.packages = with pkgs; [
-    docker
-    ripgrep
-    nodejs
-    rustup
-    gcc
-    vscode
-    ghostty
-    starship
-    zoxide
-    bat
-    dbeaver-bin
-    brightnessctl
-    playerctl
-
-    pass
-    spotify
-  ];
 
   # wayland.windowManager.hyprland = {
   #   enable = true;

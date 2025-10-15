@@ -141,6 +141,7 @@
     unzip
     usbutils
     fastfetch
+    btop
 
     # Hyprland
     hyprpaper
@@ -148,6 +149,7 @@
     waybar
     rofi-wayland
     mako
+    swaynotificationcenter
     bluez
     bluez-tools
     blueman
