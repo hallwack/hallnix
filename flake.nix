@@ -10,13 +10,18 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nur, ... }: 
-  let
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    nur,
+    ...
+  }: let
     system = "x86_64-linux";
-  in
-  {
+  in {
     nixosConfigurations.hallnet = nixpkgs.lib.nixosSystem {
       inherit system;
+      specialArgs = {inherit nur;};
       modules = [
         ./configuration.nix
         nur.modules.nixos.default
@@ -28,7 +33,7 @@
             users.hallwack = import ./home-manager.nix;
             backupFileExtension = "backup";
             sharedModules = [
-                nur.modules.homeManager.default
+              nur.modules.homeManager.default
             ];
           };
         }
