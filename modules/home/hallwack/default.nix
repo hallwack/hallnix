@@ -9,7 +9,6 @@
   ];
 
   home = {
-    username = "hallwack";
     homeDirectory = lib.mkDefault "/home/hallwack";
     stateVersion = "25.05";
   };

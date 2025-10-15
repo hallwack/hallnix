@@ -19,7 +19,7 @@
       plugins = ["git" "vi-mode" "web-search"];
     };
     
-    initExtra = ''
+    initContent = ''
       mkcp() { mkdir -p "$1" && cd "$1"; }
     '';
     
