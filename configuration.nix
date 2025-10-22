@@ -144,6 +144,7 @@
     btop
 
     # Hyprland
+    hyprlandPlugins.hyprbars
     hyprpaper
     hyprlock
     waybar
@@ -153,6 +154,7 @@
     bluez
     bluez-tools
     blueman
+    apple-cursor
   ];
 
   fonts.packages = with pkgs; [
