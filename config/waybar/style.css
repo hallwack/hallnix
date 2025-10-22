@@ -17,6 +17,11 @@ window#waybar {
   transition-duration: 0.5s;
 }
 
+.modules-center {
+  background-color: rgba(40, 40, 40, 0.8);
+  border-radius: 8px;
+}
+
 /* -----------------------------------------------------
  * Workspaces 
  * ----------------------------------------------------- */
