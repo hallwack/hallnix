@@ -35,6 +35,7 @@ in {
     dbeaver-bin
     brightnessctl
     playerctl
+    lazygit
 
     pass
     spotify
