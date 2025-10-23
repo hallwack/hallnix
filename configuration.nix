@@ -105,6 +105,7 @@
       tree
       gnomeExtensions.just-perfection
       gnomeExtensions.dash-to-dock
+      gnomeExtensions.blur-my-shell
     ];
     shell = pkgs.zsh;
   };
@@ -144,9 +145,9 @@
     btop
 
     # Hyprland
-    hyprlandPlugins.hyprbars
     hyprpaper
     hyprlock
+    hypridle
     waybar
     rofi-wayland
     mako
