@@ -100,7 +100,7 @@
   users.groups.plugdev = {};
   users.users.hallwack = {
     isNormalUser = true;
-    extraGroups = ["networkManager" "wheel" "pcscd" "plugdev"]; # Enable ‘sudo’ for the user.
+    extraGroups = ["networkmanager" "wheel" "pcscd" "plugdev"]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
       gnomeExtensions.just-perfection
@@ -143,11 +143,15 @@
     usbutils
     fastfetch
     btop
+    libnotify
 
     # Hyprland
     hyprpaper
     hyprlock
     hypridle
+    hyprshot
+    hyprcursor
+    wlogout
     waybar
     rofi-wayland
     mako
@@ -160,6 +164,8 @@
 
   fonts.packages = with pkgs; [
     nerd-fonts.geist-mono
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
   ];
 
   # Flakes
