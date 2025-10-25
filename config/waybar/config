@@ -1,10 +1,10 @@
 {
   "position": "top",
   "layer": "top",
-  "margin-bottom": 4,
+  "margin-bottom": 0,
   "margin-left": 0,
   "margin-right": 0,
-  "margin-top": 0,
+  "margin-top": 8,
   "spacing": 8,
 
   "modules-left": [],
@@ -18,7 +18,26 @@
     "backlight"
   ],
 
-  "modules-right": [],
+  "modules-right": [
+    "custom/notification"
+  ],
+
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "<span foreground='red'><small><sup>⬤</sup></small></span>",
+      "none": " ",
+      "dnd-notification": "<span foreground='red'><small><sup>⬤</sup></small></span>",
+      "dnd-none": " "
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "sleep 0.1 && swaync-client -t -sw",
+    "on-click-right": "sleep 0.1 && swaync-client -d -sw",
+    "escape": true
+  },
 
   "hyprland/workspaces": {
     "on-scroll-up": "hyprctl dispatch workspace r-1",
@@ -37,14 +56,11 @@
     }
   },
 
-  "custom/empty": {
-    "format": ""
-  },
-
   "clock": {
-    "format": "{:%H:%M %a}",
+    "format": "{:%H:%M:%S %a}",
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-    "format-alt": "{:%Y-%m-%d}"
+    "format-alt": "{:%Y-%m-%d}",
+    "interval": 1
   },
 
   "network": {
@@ -68,8 +84,8 @@
     "format": "{icon}{capacity}%",
     "format-charging": "  {capacity}%",
     "format-plugged": "  {capacity}%",
-    "format-alt": "{icon}{time}",
-    "format-icons": ["  ", "  ", "  ", "  ", "  "]
+    "format-icons": ["  ", "  ", "  ", "  ", "  "],
+    "on-click": "~/hallnix/config/rofi/powerprofile.sh"
   },
 
   "pulseaudio": {
@@ -95,4 +111,5 @@
     "device": "intel_backlight",
     "format": "󰛨 {percent}%",
   },
+
 }

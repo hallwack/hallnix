@@ -17,8 +17,18 @@ window#waybar {
   transition-duration: 0.5s;
 }
 
+.modules-left {
+  background-color: rgba(40, 40, 40, 0.9);
+  border-radius: 8px;
+}
+
 .modules-center {
-  background-color: rgba(40, 40, 40, 0.8);
+  background-color: rgba(40, 40, 40, 0.9);
+  border-radius: 8px;
+}
+
+.modules-right {
+  background-color: rgba(40, 40, 40, 0.9);
   border-radius: 8px;
 }
 
@@ -144,3 +154,13 @@ window#waybar {
 #backlight.muted {
   color: @text;
 }
+
+#custom-notification {
+  font-size: 14px;
+  color: @text;
+  border-radius: 5px;
+  background-color: @tp;
+  padding: 5px 10px;
+  margin-right: 48px;
+}
+
