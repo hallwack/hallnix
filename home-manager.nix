@@ -36,6 +36,7 @@ in {
     brightnessctl
     playerctl
     lazygit
+    zed-editor
 
     pass
     spotify
