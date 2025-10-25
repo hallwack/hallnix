@@ -1,5 +1,7 @@
-layer=top
+layer=overlay
 background-color=#282828
+anchor=top-right
+margin=8,2
 width=400
 height=180
 border-size=0
