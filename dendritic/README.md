@@ -47,4 +47,4 @@ Recommended future split:
 - if you later add macOS, reuse `modules/home/common/` and add `modules/system/darwin/`
 - Niri system enablement now lives in `modules/system/nixos/desktop-niri.nix`
 - Niri user config lives in `modules/home/linux/niri/`
-- Noctalia lives in `modules/home/linux/noctalia/`
+- Noctalia lives in `modules/home/linux/noctalia/` and is started by the Home Manager systemd service
