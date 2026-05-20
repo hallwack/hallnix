@@ -2,10 +2,10 @@
   description = "hallwack flakes";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-25.05";
+    nixpkgs.url = "nixpkgs/nixos-25.11";
     nur.url = "github:nix-community/NUR";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
