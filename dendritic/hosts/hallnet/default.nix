@@ -13,6 +13,9 @@ in {
     };
     modules = [
       ./hardware-configuration.nix
+      {
+        nixpkgs.config.allowUnfree = true;
+      }
       inputs.nur.modules.nixos.default
       inputs.home-manager.nixosModules.home-manager
       config.flake.modules.nixos.base
