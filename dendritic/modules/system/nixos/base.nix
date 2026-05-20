@@ -19,8 +19,6 @@
       randomizedDelaySec = "45min";
     };
 
-    nixpkgs.config.allowUnfree = true;
-
     services.printing.enable = true;
     services.openssh.enable = true;
     programs.firefox.enable = true;
