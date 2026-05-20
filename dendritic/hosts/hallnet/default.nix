@@ -1,0 +1,54 @@
+{
+  config,
+  inputs,
+  ...
+}: let
+  repoRoot = "/home/hallwack/Documents/dev/nix/hallnix";
+in {
+  flake.nixosConfigurations.hallnet = inputs.nixpkgs.lib.nixosSystem {
+    system = "x86_64-linux";
+    specialArgs = {
+      inherit repoRoot;
+      inherit (inputs) nur;
+    };
+    modules = [
+      ./hardware-configuration.nix
+      inputs.nur.modules.nixos.default
+      inputs.home-manager.nixosModules.home-manager
+      config.flake.modules.nixos.base
+      config.flake.modules.nixos.desktop-gnome
+      config.flake.modules.nixos.desktop-hyprland
+      config.flake.modules.nixos.audio
+      config.flake.modules.nixos.bluetooth
+      config.flake.modules.nixos.pcsc
+      config.flake.modules.nixos.fonts
+      config.flake.modules.nixos.user-hallwack
+      config.flake.modules.nixos.shell
+      {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          backupFileExtension = "backup";
+          sharedModules = [
+            inputs.nur.modules.homeManager.default
+            config.flake.modules.homeManager.user-hallwack
+            config.flake.modules.homeManager.shell
+            config.flake.modules.homeManager.git
+            config.flake.modules.homeManager.dev-tools
+            config.flake.modules.homeManager.nodejs
+            config.flake.modules.homeManager.rust
+            config.flake.modules.homeManager.bun
+            config.flake.modules.homeManager.ghostty
+            config.flake.modules.homeManager.kitty
+            config.flake.modules.homeManager.neovim
+            config.flake.modules.homeManager.desktop-hyprland
+          ];
+          users.hallwack = {};
+          extraSpecialArgs = {
+            inherit repoRoot;
+          };
+        };
+      }
+    ];
+  };
+}
