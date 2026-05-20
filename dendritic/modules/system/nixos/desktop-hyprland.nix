@@ -15,7 +15,7 @@
       hyprcursor
       wlogout
       waybar
-      rofi-wayland
+      rofi
       mako
       swaynotificationcenter
       brightnessctl
