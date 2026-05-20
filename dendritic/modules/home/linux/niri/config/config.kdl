@@ -38,8 +38,6 @@ xwayland-satellite {
     path "xwayland-satellite"
 }
 
-spawn-at-startup "noctalia-shell"
-
 binds {
     Mod+Return { spawn "ghostty"; }
     Mod+D { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
