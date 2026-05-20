@@ -34,7 +34,6 @@ in {
           useUserPackages = true;
           backupFileExtension = "backup";
           sharedModules = [
-            inputs.nur.modules.homeManager.default
             config.flake.modules.homeManager.user-hallwack
             config.flake.modules.homeManager.shell
             config.flake.modules.homeManager.git
