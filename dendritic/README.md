@@ -45,3 +45,6 @@ Recommended future split:
 - keep Hyprland, Waybar, rofi, and similar desktop pieces in `modules/home/linux/`
 - keep hardware, boot, networking, audio, and Linux services in `modules/system/nixos/`
 - if you later add macOS, reuse `modules/home/common/` and add `modules/system/darwin/`
+- Niri system enablement now lives in `modules/system/nixos/desktop-niri.nix`
+- Niri user config lives in `modules/home/linux/niri/`
+- Noctalia lives in `modules/home/linux/noctalia/`

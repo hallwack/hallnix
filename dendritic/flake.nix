@@ -5,6 +5,10 @@
     nixpkgs.url = "nixpkgs/nixos-25.05";
     nur.url = "github:nix-community/NUR";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -18,6 +22,7 @@
         ./modules/system/nixos/base.nix
         ./modules/system/nixos/desktop-gnome.nix
         ./modules/system/nixos/desktop-hyprland.nix
+        ./modules/system/nixos/desktop-niri.nix
         ./modules/system/nixos/audio.nix
         ./modules/system/nixos/bluetooth.nix
         ./modules/system/nixos/pcsc.nix
@@ -35,6 +40,8 @@
         ./modules/home/common/kitty
         ./modules/home/common/neovim
         ./modules/home/linux/desktop-hyprland.nix
+        ./modules/home/linux/niri
+        ./modules/home/linux/noctalia
         ./hosts/hallnet/default.nix
       ];
 

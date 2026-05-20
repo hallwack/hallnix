@@ -72,6 +72,7 @@ Put them in `modules/home/linux/`.
 Examples:
 
 - Hyprland config
+- Niri config
 - waybar
 - rofi
 - mako
@@ -155,6 +156,12 @@ Example split:
 modules/system/nixos/desktop-niri.nix
 modules/home/linux/desktop-niri.nix
 ```
+
+Current repo example:
+
+- [modules/system/nixos/desktop-niri.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/desktop-niri.nix:1)
+- [modules/home/linux/niri/default.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/linux/niri/default.nix:1)
+- [modules/home/linux/noctalia/default.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/linux/noctalia/default.nix:1)
 
 System module owns:
 
