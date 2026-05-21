@@ -8,7 +8,7 @@
 }:
 let
   pname = "helium-browser";
-  version = "0.12.4";
+  version = "0.12.4.1";
 
   architectures = {
     "x86_64-linux" = {
