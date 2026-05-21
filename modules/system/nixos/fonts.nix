@@ -11,6 +11,7 @@
         nerd-fonts.geist-mono
         nerd-fonts.hack
         nerd-fonts.ubuntu
+        inter
       ];
     };
   };
