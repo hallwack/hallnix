@@ -13,11 +13,11 @@ let
   architectures = {
     "x86_64-linux" = {
       arch = "x86_64";
-      hash = "sha256-3a04bc1e42c1b1e16b121345271330a756e0d20ccf75f63555ac92000a7bbead";
+      hash = "sha256-OgS8HkLBseFrEhNFJxMwp1bg0gzPdfY1VaySAAp7vq0=";
     };
     "aarch64-linux" = {
       arch = "arm64";
-      hash = "sha256-cb4358edb2ceba5b5a284fa271b5516901623b6129bb5f6fc3a46ac512a80b6a";
+      hash = "sha256-y0NY7bLOultaKE+icbVRaQFiO2Epu19vw6RqxRKoC2o=";
     };
   };
 
