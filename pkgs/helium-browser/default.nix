@@ -50,7 +50,7 @@ appimageTools.wrapType2 {
   meta = with lib; {
     description = "Internet without interruptions.";
     homepage = "https://helium.computer/";
-    license = licenses.unfree;
+    license = licenses.gpl3Only;
     mainProgram = pname;
     platforms = builtins.attrNames architectures;
   };
