@@ -2,8 +2,8 @@
 , ...
 }: {
   flake.modules.homeManager.noctalia =
-    { pkgs
-    , ...
+    { 
+      ...
     }: {
       imports = [
         inputs.noctalia.homeModules.default
