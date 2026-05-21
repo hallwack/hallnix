@@ -9,6 +9,7 @@
 
     xdg.portal = {
       enable = true;
+      xdgOpenUsePortal = true;
       config.niri = {
         "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
       };
