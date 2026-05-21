@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  self,
   ...
 }: let
   repoRoot = "/home/hallwack/hallnix";
@@ -8,7 +9,7 @@ in {
   flake.nixosConfigurations.hallnet = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     specialArgs = {
-      inherit repoRoot;
+      inherit repoRoot self;
       inherit (inputs) nur;
     };
     modules = [
@@ -51,7 +52,7 @@ in {
           ];
           users.hallwack = {};
           extraSpecialArgs = {
-            inherit repoRoot;
+            inherit repoRoot self;
           };
         };
       }

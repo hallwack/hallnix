@@ -3,6 +3,7 @@
 }: {
   flake.modules.homeManager.user-hallwack = {
     pkgs,
+    self,
     ...
   }: {
     home.username = "hallwack";
@@ -23,6 +24,8 @@
       starship
       zoxide
       jq
+
+      self.packages.${pkgs.system}.helium-browser
     ];
 
     programs.home-manager.enable = true;
