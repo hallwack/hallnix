@@ -1,4 +1,4 @@
-# dendritic
+# hallnix (dendritic pattern)
 
 This directory is a parallel sketch of the current repo reorganized in a
 feature-oriented, dendritic-style layout using `flake-parts`.
