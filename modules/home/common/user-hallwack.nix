@@ -22,6 +22,7 @@
       spotify
       starship
       zoxide
+      jq
     ];
 
     programs.home-manager.enable = true;
