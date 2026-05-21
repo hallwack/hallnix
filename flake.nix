@@ -13,11 +13,11 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    apple-fonts.url= "github:Lyndeno/apple-fonts.nix";
+    apple-fonts.url = "github:Lyndeno/apple-fonts.nix";
   };
 
-  outputs = inputs@{flake-parts, nixpkgs, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs = inputs@{ flake-parts, nixpkgs, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         inputs.flake-parts.flakeModules.modules
         ./modules/system/nixos/base.nix
@@ -51,7 +51,9 @@
         "x86_64-linux"
       ];
 
-      perSystem = {pkgs, ...}: {
+      perSystem = { pkgs, ... }: {
+        packages.helium-browser =
+          pkgs.callPackage ./pkgs/helium-browser { };
         formatter = pkgs.alejandra;
       };
     };
