@@ -2,9 +2,7 @@
   stdenv,
   lib,
   appimageTools,
-  fetchurl,
-  makeDesktopItem,
-  copyDesktopItems,
+  fetchurl
 }:
 let
   pname = "helium-browser";
@@ -37,16 +35,26 @@ let
 in
 appimageTools.wrapType2 {
   inherit pname version src;
-  nativeBuildInputs = [ copyDesktopItems ];
-  desktopItems = [
-    (makeDesktopItem {
-      name = pname;
-      desktopName = "Helium Browser";
-      exec = "${pname}";
-      icon = "${src}/helium.png";
-      categories = ["Network" "WebBrowser"];
-    })
-  ];
+    extraInstallCommands = ''
+    mkdir -p $out/share/applications
+    mkdir -p $out/share/icons/hicolor/scalable/apps
+
+    cp ${./helium.svg} \
+      $out/share/icons/hicolor/scalable/apps/helium.svg
+
+    cat > $out/share/applications/helium-browser.desktop <<EOF
+    [Desktop Entry]
+    Name=Helium Browser
+    Comment=Internet without interruptions
+    Exec=${pname} %U
+    Terminal=false
+    Type=Application
+    Icon=helium
+    Categories=Network;WebBrowser;
+    MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+    StartupWMClass=Helium
+    EOF
+  '';
   meta = with lib; {
     description = "Internet without interruptions.";
     homepage = "https://helium.computer/";
