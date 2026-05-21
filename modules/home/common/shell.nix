@@ -38,7 +38,7 @@
         cat = "bat";
         cd = "z";
         ll = "ls -l";
-        switch = "sudo nixos-rebuild switch --flake ${repoRoot}/dendritic#hallnet";
+        switch = "sudo nixos-rebuild switch --flake ${repoRoot}#hallnet";
       };
       initContent = ''
         mkcp() { mkdir -p "$1" && cd "$1"; }
