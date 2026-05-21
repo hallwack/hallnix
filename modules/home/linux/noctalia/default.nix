@@ -13,16 +13,6 @@
     programs.noctalia-shell = {
       enable = true;
       package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
-      systemd.enable = true;
-      settings = {
-        settingsVersion = 0;
-        bar = {
-          barType = "simple";
-          position = "top";
-          showCapsule = true;
-          backgroundOpacity = 0.93;
-        };
-      };
     };
   };
 }
