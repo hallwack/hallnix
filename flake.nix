@@ -34,6 +34,7 @@
         ./modules/home/common/git.nix
         ./modules/home/common/dev-tools.nix
         ./modules/home/common/nodejs.nix
+        ./modules/home/common/nix.nix
         ./modules/home/common/rust.nix
         ./modules/home/common/bun.nix
         ./modules/home/common/ghostty

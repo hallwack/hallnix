@@ -38,6 +38,7 @@ in {
             config.flake.modules.homeManager.shell
             config.flake.modules.homeManager.git
             config.flake.modules.homeManager.dev-tools
+            config.flake.modules.homeManager.nix
             config.flake.modules.homeManager.nodejs
             config.flake.modules.homeManager.rust
             config.flake.modules.homeManager.bun
