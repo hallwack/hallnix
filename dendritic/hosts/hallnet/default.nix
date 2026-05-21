@@ -3,7 +3,7 @@
   inputs,
   ...
 }: let
-  repoRoot = "/home/hallwack/Documents/dev/nix/hallnix";
+  repoRoot = "/home/hallwack/hallnix";
 in {
   flake.nixosConfigurations.hallnet = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
