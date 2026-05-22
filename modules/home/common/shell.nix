@@ -44,8 +44,9 @@
           size = 10000;
           path = "$HOME/.zsh_history";
         };
-        initExtra = builtins.readFile
-          "${repoRoot}/config/zsh/custom.zsh";
+        initContent = ''
+          source "${config.xdg.configHome}/zsh/custom.zsh"
+        '';
       };
 
       xdg.configFile."starship.toml".source =
