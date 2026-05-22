@@ -2,6 +2,7 @@
   ...
 }: {
   flake.modules.homeManager.neovim = {
+    config,
     lib,
     pkgs,
     repoRoot,
@@ -16,17 +17,17 @@
       withRuby = false;
     };
 
-      home.activation.linkNvimConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if [ -e "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
-      rm -rf "$HOME/.config/nvim"
-    fi
-    ln -sfn "${repoRoot}/config/nvim" "$HOME/.config/nvim"
-  '';
+    xdg.configFile."nvim".source =
+      lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/nvim");
 
     home.packages = with pkgs; [
       ripgrep
       fd
       gcc
+
+      stylua
+      lua-language-server
+      tree-sitter
     ];
   };
 }
