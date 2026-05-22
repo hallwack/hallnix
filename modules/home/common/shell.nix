@@ -50,6 +50,6 @@
         lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/starship.toml");
 
       home.file.".zshrc".source =
-        config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/.zshrc";
+        config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/zsh/custom.zsh";
     };
 }
