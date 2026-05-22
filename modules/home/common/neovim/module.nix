@@ -12,7 +12,7 @@
       withRuby = false;
     };
 
-    xdg.configFile."config/nvim".source =
+    xdg.configFile."nvim".source =
       lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/nvim");
 
     home.packages = with pkgs; [

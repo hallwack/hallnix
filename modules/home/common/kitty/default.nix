@@ -5,7 +5,7 @@
       kitty
     ];
 
-    xdg.configFile."config/kitty".source =
+    xdg.configFile."kitty".source =
       lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/kitty");
   };
 }

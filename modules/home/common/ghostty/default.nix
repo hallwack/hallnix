@@ -5,7 +5,7 @@
       ghostty
     ];
 
-    xdg.configFile."config/ghostty".source =
+    xdg.configFile."ghostty".source =
       lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/ghostty");
   };
 }
