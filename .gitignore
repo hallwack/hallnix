@@ -1,0 +1,3 @@
+# Ignore files ending with .bak or .backup
+*.bak
+*.backup
