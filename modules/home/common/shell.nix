@@ -50,7 +50,7 @@
     xdg.configFile."starship.toml".source =
       lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/starship.toml");
 
-    xdg.configFile.".zshrc".source =
+    home.file.".zshrc".source =
       lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/.zshrc");
   };
 }
