@@ -68,6 +68,28 @@ window-rule {
     clip-to-geometry true
 }
 
+window-rule {
+    match app-id="helium"
+    match app-id="spotify"
+    match app-id="code"
+    
+    default-column-width {
+        proportion 1.0
+    }
+
+    opacity 1.0
+}
+
+recent-windows {
+    // Pre-select the "Output" scope when switching windows.
+    binds {
+        Alt+Tab         { next-window     scope="output"; }
+        Alt+Shift+Tab   { previous-window scope="output"; }
+        Mod+grave       { next-window     scope="output" filter="app-id"; }
+        Mod+Shift+grave { previous-window scope="output" filter="app-id"; }
+    }
+}
+
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn-sh "kitty -e"; }
