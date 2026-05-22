@@ -2,6 +2,7 @@
 }: {
   flake.modules.homeManager.shell =
     { config
+    , pkgs
     , lib
     , repoRoot
     , ...
@@ -27,10 +28,17 @@
         enableCompletion = false;
         autosuggestion.enable = false;
         syntaxHighlighting.enable = true;
+        plugins = [
+          {
+            name = "zsh-vi-mode";
+            src = pkgs.zsh-vi-mode;
+            file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+          }
+        ];
         oh-my-zsh = {
           enable = true;
           theme = "";
-          plugins = [ "git" "vi-mode" "web-search" ];
+          plugins = [ "git" "web-search" ];
         };
         shellAliases = {
           vi = "nvim";
