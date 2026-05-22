@@ -21,7 +21,6 @@
         gnomeExtensions.dash-to-dock
         gnomeExtensions.blur-my-shell
         gnome-tweaks
-        neovim
         codex
       ];
     };
