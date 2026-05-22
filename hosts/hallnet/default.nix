@@ -20,7 +20,6 @@ in {
       inputs.home-manager.nixosModules.home-manager
       config.flake.modules.nixos.base
       config.flake.modules.nixos.desktop-gnome
-      config.flake.modules.nixos.desktop-hyprland
       config.flake.modules.nixos.desktop-niri
       config.flake.modules.nixos.audio
       config.flake.modules.nixos.bluetooth
@@ -45,7 +44,6 @@ in {
             config.flake.modules.homeManager.ghostty
             config.flake.modules.homeManager.kitty
             config.flake.modules.homeManager.neovim
-            config.flake.modules.homeManager.desktop-hyprland
             config.flake.modules.homeManager.niri
             config.flake.modules.homeManager.noctalia
           ];
