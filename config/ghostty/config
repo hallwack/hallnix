@@ -48,7 +48,7 @@ shell-integration = zsh
 clipboard-read = allow
 clipboard-write = allow
 
-theme = GruvboxDarkHard
+theme = Gruvbox Dark Hard
 background-opacity = 0.9
 
 background = #1d2021
