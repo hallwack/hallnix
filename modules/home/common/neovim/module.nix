@@ -13,9 +13,10 @@
     withRuby = false;
   };
 
-  home.file.".config/nvim".source =
-    config.lib.file.mkOutOfStoreSymlink
-      "${repoRoot}/config/nvim";
+  xdg.configFile."nvim" = {
+    source = config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/nvim";
+    recursive = false; # penting! jangan expand isi direktori
+  };
 
   home.packages = with pkgs; [
     ripgrep
