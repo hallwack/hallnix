@@ -1,23 +1,25 @@
-{
-  lib, config, pkgs, repoRoot,
-  ...
+{ config
+, pkgs
+, repoRoot
+, ...
 }: {
-    programs.neovim = {
-      enable = true;
-      defaultEditor = true;
-      viAlias = true;
-      vimAlias = true;
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
 
-      withPython3 = false;
-      withRuby = false;
-    };
+    withPython3 = false;
+    withRuby = false;
+  };
 
-    xdg.configFile."nvim".source =
-      lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/nvim");
+  home.file.".config/nvim".source =
+    config.lib.file.mkOutOfStoreSymlink
+      "${repoRoot}/config/nvim";
 
-    home.packages = with pkgs; [
-      ripgrep
-      fd
-      gcc
-    ];
+  home.packages = with pkgs; [
+    ripgrep
+    fd
+    gcc
+  ];
 }
