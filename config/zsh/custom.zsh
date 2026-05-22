@@ -74,7 +74,7 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git vi-mode web-search)
 
-source $ZSH/oh-my-zsh.sh
+# source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
@@ -137,10 +137,10 @@ esac
 # pnpm end
 
 # cargo (Rust)
-. "$HOME/.cargo/env"
+# . "$HOME/.cargo/env"
 
 # deno (js)
-. "/home/hallwack/.deno/env"
+# . "/home/hallwack/.deno/env"
 
 mkcp() {
   mkdir -p "$1" && cd "$1";
@@ -151,4 +151,4 @@ export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
-eval "$(fnm env --use-on-cd)"
+# eval "$(fnm env --use-on-cd)"
