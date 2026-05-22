@@ -149,6 +149,22 @@ mkcp() {
 # composer (php)
 export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
+# p - paste setelah cursor
+function vi-paste-after() {
+  local content=$(wl-paste)
+  LBUFFER+=$content
+}
+zle -N vi-paste-after
+bindkey -a 'p' vi-paste-after
+
+# P - paste sebelum cursor
+function vi-paste-before() {
+  local content=$(wl-paste)
+  RBUFFER=$content$RBUFFER
+}
+zle -N vi-paste-before
+bindkey -a 'P' vi-paste-before
+
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 # eval "$(fnm env --use-on-cd)"
