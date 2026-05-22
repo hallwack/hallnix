@@ -8,6 +8,6 @@
     ...
   }: {
     xdg.configFile."niri".source =
-      lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/modules/home/linux/niri/config");
+      lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/niri");
   };
 }

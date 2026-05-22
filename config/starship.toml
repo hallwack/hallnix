@@ -1,0 +1,27 @@
+add_newline = true
+
+format = "$directory$git_branch$git_status$nodejs$rust$bun$line_break$character"
+
+[directory]
+style = "bold blue"
+truncation_length = 4
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+[git_status]
+style = "bold red"
+
+[nodejs]
+symbol = " "
+
+[rust]
+symbol = " "
+
+[bun]
+symbol = "🥟 "
+
+[character]
+success_symbol = "[>](bold green)"
+error_symbol = "[>](bold red)"

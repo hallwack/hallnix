@@ -1,4 +1,7 @@
 { inputs
+, config
+, lib
+, repoRoot
 , ...
 }: {
   flake.modules.homeManager.noctalia =
@@ -38,7 +41,7 @@
             showCategories = false;
             showIconBackground = false;
             sortByMostUsed = true;
-            terminalCommand = "alacritty -e";
+            terminalCommand = "kitty -e";
             viewMode = "list";
           };
           audio = {
@@ -743,5 +746,8 @@
           };
         };
       };
+
+      xdg.configFile."noctalia.kdl".source =
+        lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/noctalia.kdl");
     };
 }
