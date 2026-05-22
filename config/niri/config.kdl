@@ -71,7 +71,7 @@ window-rule {
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn-sh "kitty -e"; }
-    Mod+Return { spawn-sh "ghostty -e"; }
+    Mod+Return { spawn-sh "ghostty"; }
     Mod+B hotkey-overlay-title="Open a Browser: Helium" { spawn "helium-browser"; }
     Mod+D hotkey-overlay-title="Run a Launcher" { spawn-sh "noctalia-shell ipc call launcher toggle"; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: noctalia" { spawn-sh "noctalia-shell ipc call lockScreen lock"; }
