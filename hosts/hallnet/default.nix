@@ -1,17 +1,21 @@
-{
-  config,
-  inputs,
-  self,
-  lib,
-  ...
-}: let
+{ config
+, inputs
+, self
+, lib
+, ...
+}:
+let
   repoRoot = "/home/hallwack/hallnix";
-in {
+  system = "x86_64-linux";
+in
+{
   flake.nixosConfigurations.hallnet = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     specialArgs = {
-      inherit repoRoot self lib;
+      inherit repoRoot self lib system;
       inherit (inputs) nur;
+      appleFonts =
+        inputs.apple-fonts.packages.${system};
     };
     modules = [
       ./hardware-configuration.nix
@@ -49,9 +53,11 @@ in {
             config.flake.modules.homeManager.niri
             config.flake.modules.homeManager.noctalia
           ];
-          users.hallwack = {};
+          users.hallwack = { };
           extraSpecialArgs = {
             inherit repoRoot self;
+            appleFonts =
+              inputs.apple-fonts.packages.${system};
           };
         };
       }
