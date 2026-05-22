@@ -44,19 +44,14 @@
           size = 10000;
           path = "$HOME/.zsh_history";
         };
+        initExtra = builtins.readFile
+          "${repoRoot}/config/zsh/custom.zsh";
       };
 
       xdg.configFile."starship.toml".source =
         lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/starship.toml");
 
-      home.file = {
-        ".zshrc" = {
-          target = ".zshrc";
-
-          source =
-            config.lib.file.mkOutOfStoreSymlink
-              "${repoRoot}/config/zsh/custom.zsh";
-        };
-      };
+      xdg.configFile."zsh/custom.zsh".source =
+        lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/zsh/custom.zsh");
     };
 }
