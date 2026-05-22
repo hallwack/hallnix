@@ -680,9 +680,9 @@
           };
           ui = {
             boxBorderEnabled = false;
-            fontDefault = "Sans Serif";
-            fontDefaultScale = 1;
-            fontFixed = "monospace";
+            fontDefault = "SF Pro Display";
+            fontDefaultScale = 1.1;
+            fontFixed = "SF Mono";
             fontFixedScale = 1;
             panelBackgroundOpacity = 0.93;
             panelsAttachedToBar = true;
