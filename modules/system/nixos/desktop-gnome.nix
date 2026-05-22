@@ -19,6 +19,9 @@
     services.udev.packages = with pkgs; [
       gnome-settings-daemon
       pcsc-tools
+      brave
+      wl-clipboard
+      apple-cursor
     ];
 
     programs.dconf.enable = true;

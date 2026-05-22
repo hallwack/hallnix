@@ -19,6 +19,7 @@
       xwayland-satellite
       fuzzel
       apple-cursor
+      brave
     ];
   };
 }

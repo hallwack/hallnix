@@ -7,9 +7,9 @@
   }: {
     home.packages = with pkgs; [
       nodejs
-      nodePackages.pnpm
-      nodePackages.typescript-language-server
-      nodePackages.prettier
+      pnpm
+      typescript-language-server
+      prettier
     ];
   };
 }

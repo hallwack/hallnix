@@ -1,12 +1,11 @@
 { inputs
-, config
-, lib
-, repoRoot
 , ...
 }: {
   flake.modules.homeManager.noctalia =
-    { 
-      ...
+    { lib
+    , config
+    , repoRoot
+    , ...
     }: {
       imports = [
         inputs.noctalia.homeModules.default

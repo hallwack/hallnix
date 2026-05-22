@@ -68,8 +68,8 @@ window-rule {
 
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
-    Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
-    Mod+B hotkey-overlay-title="Open a Browser: brave" { spawn "brave"; }
+    Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty -e"; }
+    Mod+B hotkey-overlay-title="Open a Browser: Helium" { spawn "helium-browser"; }
     Mod+D hotkey-overlay-title="Run a Launcher" { spawn-sh "noctalia-shell ipc call launcher toggle"; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: noctalia" { spawn-sh "noctalia-shell ipc call lockScreen lock"; }
 
@@ -144,5 +144,3 @@ binds {
     Ctrl+Alt+Delete { quit; }
     Mod+Shift+P { power-off-monitors; }
 }
-
-include "./noctalia.kdl"

@@ -25,16 +25,12 @@
       zoxide
       jq
 
-      self.packages.${pkgs.system}.helium-browser
+      self.packages.${pkgs.stdenv.hostPlatform.system}.helium-browser
     ];
 
     programs.home-manager.enable = true;
 
-    gtk = {
-      enable = true;
-      theme.name = "Adwaita-dark";
-      iconTheme.name = "Papirus";
-    };
+    gtk.enable = true;
 
     dconf.settings = {
       "org/gnome/desktop/input-sources" = {
