@@ -1,3 +1,5 @@
+spawn-at-startup "noctalia-shell"
+
 input {
     keyboard {
         xkb {
@@ -144,3 +146,6 @@ binds {
     Ctrl+Alt+Delete { quit; }
     Mod+Shift+P { power-off-monitors; }
 }
+
+include "./noctalia.kdl"
+
