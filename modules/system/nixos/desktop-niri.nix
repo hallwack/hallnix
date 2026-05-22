@@ -22,6 +22,7 @@
         fuzzel
         apple-cursor
         brave
+        wl-clipboard
       ];
     };
 }
