@@ -41,9 +41,6 @@
         ll = "ls -l";
         switch = "sudo nixos-rebuild switch --flake ${repoRoot}#hallnet";
       };
-      initContent = ''
-        source "${config.xdg.configHome}/zsh/custom.zsh"
-      '';
       history = {
         size = 10000;
         path = "$HOME/.zsh_history";
@@ -53,7 +50,7 @@
     xdg.configFile."starship.toml".source =
       lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/starship.toml");
 
-    xdg.configFile."zsh/custom.zsh".source =
-      lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/zsh/custom.zsh");
+    xdg.configFile.".zshrc".source =
+      lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/.zshrc");
   };
 }
