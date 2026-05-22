@@ -1,7 +1,7 @@
 {
   ...
 }: {
-  flake.modules.nixos.user-hallwack = {pkgs, ...}: {
+  flake.modules.nixos.user-hallwack = {pkgs, codex, ...}: {
     environment.shells = with pkgs; [zsh];
 
     users.users.hallwack = {
@@ -22,6 +22,7 @@
         gnomeExtensions.blur-my-shell
         gnome-tweaks
         neovim
+        codex
       ];
     };
   };

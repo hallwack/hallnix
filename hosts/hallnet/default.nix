@@ -16,6 +16,7 @@ in
       inherit (inputs) nur;
       appleFonts =
         inputs.apple-fonts.packages.${system};
+      codex = inputs.codex-cli-nix.packages.${system}.default;
     };
     modules = [
       ./hardware-configuration.nix
@@ -58,6 +59,7 @@ in
             inherit repoRoot self;
             appleFonts =
               inputs.apple-fonts.packages.${system};
+            codex = inputs.codex-cli-nix.packages.${system}.default;
           };
         };
       }
