@@ -48,7 +48,7 @@ shell-integration = zsh
 clipboard-read = allow
 clipboard-write = allow
 
-theme = Gruvbox Dark Hard
+theme = noctalia
 background-opacity = 0.9
 
 background = #1d2021
@@ -69,25 +69,29 @@ window-padding-y = 12
 adjust-cell-height = 14%
 adjust-cell-width = 5%
 
-window-titlebar-background = #1d2021
-window-titlebar-foreground = #d79921
+palette = 0= #41484d
+palette = 1= #ffb4ab
+palette = 2= #85cfff
+palette = 3= #b6c9d8
+palette = 4= #cdc0e9
+palette = 5= #85cfff
+palette = 6= #b6c9d8
+palette = 7= #e2e2e5
+palette = 8= #c1c7ce
+palette = 9=  #ffb4ab
+palette = 10= #85cfff
+palette = 11= #b6c9d8
+palette = 12= #cdc0e9
+palette = 13= #85cfff
+palette = 14= #b6c9d8
+palette = 15= #e2e2e5
+background = #111416
+foreground = #e2e2e5
+cursor-color = #e2e2e5
+cursor-text = #111416
 
-palette = 0=#1d2021
-palette = 1=#cc241d
-palette = 2=#98971a
-palette = 3=#d79921
-palette = 4=#458588
-palette = 5=#b16286
-palette = 6=#689d6a
-palette = 7=#a89984
-palette = 8=#928374
-palette = 9=#fb4934
-palette = 10=#b8bb26
-palette = 11=#fabd2f
-palette = 12=#83a598
-palette = 13=#d3869b
-palette = 14=#8ec07c
-palette = 15=#ebdbb2
+selection-background = #cdc0e9
+selection-foreground = #342b4b
 
 font-size = 11
 font-family = GeistMono Nerd Font
