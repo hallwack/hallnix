@@ -2,7 +2,6 @@
   ...
 }: {
   flake.modules.homeManager.neovim = {
-    config,
     lib,
     pkgs,
     repoRoot,
