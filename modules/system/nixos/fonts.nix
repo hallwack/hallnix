@@ -15,6 +15,7 @@
           nerd-fonts.hack
           nerd-fonts.ubuntu
           inter
+          iosevka
           appleFonts.sf-pro
           appleFonts.sf-mono
           appleFonts.ny
@@ -23,9 +24,13 @@
         fontconfig = {
           defaultFonts = {
             serif = [
-              "SF Pro"
+              "New York"
+              "New York Large"
+              "New York Small"
             ];
             sansSerif = [
+              "SF Pro Display"
+              "SF Pro Text"
               "SF Pro"
             ];
             emoji = [
