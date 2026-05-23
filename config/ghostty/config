@@ -68,8 +68,8 @@ window-height = 36
 window-width = 180
 window-padding-x = 12
 window-padding-y = 12
-adjust-cell-height = 14%
-adjust-cell-width = 5%
+adjust-cell-height = 5%
+adjust-cell-width = 4%
 
 palette = 0= #41484d
 palette = 1= #ffb4ab
@@ -95,7 +95,7 @@ cursor-text = #111416
 selection-background = #cdc0e9
 selection-foreground = #342b4b
 
-font-size = 11
+font-size = 12
 font-family = GeistMono Nerd Font
 font-style = Semibold
 
