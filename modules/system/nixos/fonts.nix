@@ -13,23 +13,27 @@
           nerd-fonts.iosevka-term
           nerd-fonts.iosevka
           nerd-fonts.symbols-only
+
           inter
+
           appleFonts.sf-pro
           appleFonts.sf-mono
           appleFonts.ny
+
+          noto-fonts
+          noto-fonts-cjk-sans
+          noto-fonts-color-emoji
         ];
 
         fontconfig = {
           defaultFonts = {
             serif = [
               "New York"
-              "New York Large"
-              "New York Small"
+              "Noto Serif"
             ];
             sansSerif = [
               "SF Pro Display"
-              "SF Pro Text"
-              "SF Pro"
+              "Noto Sans"
             ];
             emoji = [
               "Noto Color Emoji"
