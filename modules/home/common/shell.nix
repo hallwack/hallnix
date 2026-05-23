@@ -1,12 +1,16 @@
-{ ...
-}: {
+{
+  ...
+}:
+{
   flake.modules.homeManager.shell =
-    { config
-    , pkgs
-    , lib
-    , repoRoot
-    , ...
-    }: {
+    {
+      config,
+      pkgs,
+      lib,
+      repoRoot,
+      ...
+    }:
+    {
       programs.direnv = {
         enable = true;
         enableZshIntegration = true;
@@ -38,7 +42,10 @@
         oh-my-zsh = {
           enable = true;
           theme = "";
-          plugins = [ "git" "web-search" ];
+          plugins = [
+            "git"
+            "web-search"
+          ];
         };
         shellAliases = {
           vi = "nvim";
@@ -57,10 +64,12 @@
         '';
       };
 
-      xdg.configFile."starship.toml".source =
-        lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/starship.toml");
+      xdg.configFile."starship.toml".source = lib.mkForce (
+        config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/starship.toml"
+      );
 
-      xdg.configFile."zsh/custom.zsh".source =
-        lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/zsh/custom.zsh");
+      xdg.configFile."zsh/custom.zsh".source = lib.mkForce (
+        config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/zsh/custom.zsh"
+      );
     };
 }
