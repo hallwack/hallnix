@@ -47,6 +47,8 @@ shell-integration = zsh
 
 clipboard-read = allow
 clipboard-write = allow
+clipboard-trim-trailing-spaces = true
+copy-on-select = clipboard
 
 theme = noctalia
 background-opacity = 0.9
