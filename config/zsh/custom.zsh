@@ -149,21 +149,35 @@ mkcp() {
 # composer (php)
 export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
-# p - paste setelah cursor
-function vi-paste-after() {
-  local content=$(wl-paste)
-  LBUFFER+=$content
-}
-zle -N vi-paste-after
-bindkey -a 'p' vi-paste-after
+autoload -Uz bracketed-paste-magic
+zle -N bracketed-paste bracketed-paste-magic
 
-# P - paste sebelum cursor
-function vi-paste-before() {
-  local content=$(wl-paste)
-  RBUFFER=$content$RBUFFER
+# Yank -> Wayland clipboard
+function vi-yank-clipboard() {
+  zle vi-yank
+  print -rn -- "$CUTBUFFER" | wl-copy
 }
-zle -N vi-paste-before
-bindkey -a 'P' vi-paste-before
+
+zle -N vi-yank-clipboard
+bindkey -M vicmd 'y' vi-yank-clipboard
+
+# Paste after cursor
+function vi-put-after-clipboard() {
+  CUTBUFFER="$(wl-paste)"
+  zle vi-put-after
+}
+
+zle -N vi-put-after-clipboard
+bindkey -M vicmd 'p' vi-put-after-clipboard
+
+# Paste before cursor
+function vi-put-before-clipboard() {
+  CUTBUFFER="$(wl-paste)"
+  zle vi-put-before
+}
+
+zle -N vi-put-before-clipboard
+bindkey -M vicmd 'P' vi-put-before-clipboard
 
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
