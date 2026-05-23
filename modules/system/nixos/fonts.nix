@@ -16,10 +16,14 @@
           nerd-fonts.ubuntu
           nerd-fonts.iosevka-term
           nerd-fonts.iosevka
+          nerd-fonts.symbols-only
           inter
           appleFonts.sf-pro
           appleFonts.sf-mono
           appleFonts.ny
+          appleFonts.sf-pro-nerd
+          appleFonts.sf-mono-nerd
+          appleFonts.ny-nerd
         ];
 
         fontconfig = {
