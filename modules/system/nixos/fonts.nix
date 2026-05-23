@@ -14,8 +14,9 @@
           nerd-fonts.geist-mono
           nerd-fonts.hack
           nerd-fonts.ubuntu
+          nerd-fonts.iosevka-term
+          nerd-fonts.iosevka
           inter
-          iosevka
           appleFonts.sf-pro
           appleFonts.sf-mono
           appleFonts.ny
