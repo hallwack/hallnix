@@ -17,10 +17,11 @@
         enable = true;
         xdgOpenUsePortal = true;
         extraPortals = with pkgs; [
+          xdg-desktop-portal-gnome
           xdg-desktop-portal-gtk
         ];
         config.niri = {
-          default = [ "gtk" ];
+          default = [ "gnome" "gtk" ];
           "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         };
       };
