@@ -17,7 +17,6 @@
           appleFonts.sf-pro
           appleFonts.sf-mono
           appleFonts.ny
-          appleFonts.sf-pro-nerd
         ];
 
         fontconfig = {
