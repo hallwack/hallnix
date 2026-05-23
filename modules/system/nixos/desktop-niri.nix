@@ -1,9 +1,13 @@
-{ ...
-}: {
+{
+  ...
+}:
+{
   flake.modules.nixos.desktop-niri =
-    { pkgs
-    , ...
-    }: {
+    {
+      pkgs,
+      ...
+    }:
+    {
       programs.niri.enable = true;
 
       security.polkit.enable = true;
