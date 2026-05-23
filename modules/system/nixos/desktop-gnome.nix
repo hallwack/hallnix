@@ -16,7 +16,6 @@
 
       services.displayManager.gdm = {
         enable = true;
-        wayland = true;
       };
 
       services.udev.packages = with pkgs; [
