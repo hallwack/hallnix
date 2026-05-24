@@ -72,7 +72,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vi-mode web-search)
+plugins=(git web-search)
 
 # source $ZSH/oh-my-zsh.sh
 
@@ -105,6 +105,29 @@ plugins=(git vi-mode web-search)
 export LOCAL_BIN="$HOME/.local/bin"
 export PATH="$LOCAL_BIN:$PATH"
 
+ZVM_SYSTEM_CLIPBOARD_ENABLED=true
+
+autoload -Uz bracketed-paste-magic
+zle -N bracketed-paste bracketed-paste-magic
+
+function zvm_vi_put_after() {
+  CUTBUFFER="$(wl-paste --no-newline)"
+  zle .vi-put-after
+}
+
+function zvm_vi_put_before() {
+  CUTBUFFER="$(wl-paste --no-newline)"
+  zle .vi-put-before
+}
+
+zle -N zvm_vi_put_after
+zle -N zvm_vi_put_before
+
+function zvm_after_init() {
+  bindkey -M vicmd 'p' zvm_vi_put_after
+  bindkey -M vicmd 'P' zvm_vi_put_before
+}
+
 # fnm (js)
 FNM_PATH="/home/hallwack/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
@@ -112,28 +135,21 @@ if [ -d "$FNM_PATH" ]; then
   eval "`fnm env`"
 fi
 
-alias vi="nvim"
-alias lvi="NVIM_APPNAME=lazyvim nvim"
-alias tvi="NVIM_APPNAME=tinyvim nvim"
-alias mvi="NVIM_APPNAME=meowvim nvim"
 alias cls="clear"
 alias dockerbash="docker exec -it lamp-php82 bash"
-alias cat="batcat"
-alias cd="z"
-
 # bun completions
-[ -s "/home/hallwack/.bun/_bun" ] && source "/home/hallwack/.bun/_bun"
+# [ -s "/home/hallwack/.bun/_bun" ] && source "/home/hallwack/.bun/_bun"
 
 # bun (js)
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+# export BUN_INSTALL="$HOME/.bun"
+# export PATH="$BUN_INSTALL/bin:$PATH"
 
 # pnpm (js)
-export PNPM_HOME="/home/hallwack/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
+# export PNPM_HOME="/home/hallwack/.local/share/pnpm"
+# case ":$PATH:" in
+#   *":$PNPM_HOME:"*) ;;
+#   *) export PATH="$PNPM_HOME:$PATH" ;;
+# esac
 # pnpm end
 
 # cargo (Rust)
@@ -147,37 +163,7 @@ mkcp() {
 }
 
 # composer (php)
-export PATH="$HOME/.config/composer/vendor/bin:$PATH"
-
-autoload -Uz bracketed-paste-magic
-zle -N bracketed-paste bracketed-paste-magic
-
-# Yank -> Wayland clipboard
-function vi-yank-clipboard() {
-  zle vi-yank
-  print -rn -- "$CUTBUFFER" | wl-copy
-}
-
-zle -N vi-yank-clipboard
-bindkey -M vicmd 'y' vi-yank-clipboard
-
-# Paste after cursor
-function vi-put-after-clipboard() {
-  CUTBUFFER="$(wl-paste)"
-  zle vi-put-after
-}
-
-zle -N vi-put-after-clipboard
-bindkey -M vicmd 'p' vi-put-after-clipboard
-
-# Paste before cursor
-function vi-put-before-clipboard() {
-  CUTBUFFER="$(wl-paste)"
-  zle vi-put-before
-}
-
-zle -N vi-put-before-clipboard
-bindkey -M vicmd 'P' vi-put-before-clipboard
+# export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
