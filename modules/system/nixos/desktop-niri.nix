@@ -28,9 +28,11 @@
 
       environment.systemPackages = with pkgs; [
         xwayland-satellite
+        brightnessctl
         fuzzel
         apple-cursor
         brave
+        ferdium 
         wl-clipboard
       ];
     };
