@@ -32,7 +32,6 @@
         fuzzel
         apple-cursor
         brave
-        ferdium 
         wl-clipboard
       ];
     };
