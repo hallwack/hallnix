@@ -24,6 +24,7 @@
       starship
       zoxide
       jq
+      obsidian
 
       self.packages.${pkgs.stdenv.hostPlatform.system}.helium-browser
     ];
