@@ -25,6 +25,7 @@
       zoxide
       jq
       obsidian
+      ferdium
 
       self.packages.${pkgs.stdenv.hostPlatform.system}.helium-browser
     ];
