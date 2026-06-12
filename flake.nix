@@ -5,6 +5,7 @@
     nixpkgs.url = "nixpkgs/nixos-unstable";
     nur.url = "github:nix-community/NUR";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    hallnix.url = "path:/home/hallwack/hallnix-pkgs";
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,10 +54,6 @@
       ];
 
       perSystem = { pkgs, ... }: {
-        packages.helium-browser =
-          pkgs.callPackage ./pkgs/helium-browser { };
-        packages.zennotes =
-          pkgs.callPackage ./pkgs/zennotes { };
         formatter = pkgs.alejandra;
       };
     };

@@ -56,7 +56,7 @@ in
           ];
           users.hallwack = { };
           extraSpecialArgs = {
-            inherit repoRoot self;
+            inherit repoRoot self inputs;
             appleFonts =
               inputs.apple-fonts.packages.${system};
             codex = inputs.codex-cli-nix.packages.${system}.default;

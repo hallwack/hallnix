@@ -15,7 +15,7 @@
         inputs.noctalia.homeModules.default
       ];
 
-      programs.noctalia-shell = {
+      programs.noctalia = {
         enable = true;
         settings = {
           settingsVersion = 59;
@@ -755,8 +755,8 @@
         };
       };
 
-      xdg.configFile."noctalia.kdl".source = lib.mkForce (
+      /* xdg.configFile."noctalia.kdl".source = lib.mkForce (
         config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/noctalia.kdl"
-      );
+      ); */
     };
 }

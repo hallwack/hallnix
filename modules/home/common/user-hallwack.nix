@@ -1,4 +1,5 @@
 {
+  inputs,
   ...
 }: {
   flake.modules.homeManager.user-hallwack = {
@@ -27,8 +28,8 @@
       obsidian
       ferdium
 
-      self.packages.${pkgs.stdenv.hostPlatform.system}.helium-browser
-      self.packages.${pkgs.stdenv.hostPlatform.system}.zennotes
+      inputs.hallnix.packages.${pkgs.stdenv.hostPlatform.system}.helium-browser
+      inputs.hallnix.packages.${pkgs.stdenv.hostPlatform.system}.zennotes
     ];
 
     programs.home-manager.enable = true;
