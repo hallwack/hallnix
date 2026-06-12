@@ -55,6 +55,8 @@
       perSystem = { pkgs, ... }: {
         packages.helium-browser =
           pkgs.callPackage ./pkgs/helium-browser { };
+        packages.zennotes =
+          pkgs.callPackage ./pkgs/zennotes { };
         formatter = pkgs.alejandra;
       };
     };

@@ -28,6 +28,7 @@
       ferdium
 
       self.packages.${pkgs.stdenv.hostPlatform.system}.helium-browser
+      self.packages.${pkgs.stdenv.hostPlatform.system}.zennotes
     ];
 
     programs.home-manager.enable = true;
