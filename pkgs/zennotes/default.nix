@@ -42,6 +42,7 @@ appimageTools.wrapType2 {
 
     substituteInPlace $out/share/applications/${pname}.desktop \
       --replace "Exec=AppRun" "Exec=${pname}" \
+      --replace "ZenNotes desktop file" "Keyboard-first local Markdown notes"
 
     cp -r ${appImageContents}/usr/share/icons $out/share || true
   '';
