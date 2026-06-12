@@ -40,7 +40,7 @@ appimageTools.wrapType2 {
 
     cp ${appImageContents}/*.desktop $out/share/applications/${pname}.desktop
 
-    subtituteInPlace $out/share/applications/${pname}.desktop \
+    substituteInPlace $out/share/applications/${pname}.desktop \
       --replace "Exec=AppRun" "Exec=${pname}" \
 
     cp -r ${appImageContents}/usr/share/icons $out/share || true
