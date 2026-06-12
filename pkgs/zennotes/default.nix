@@ -43,7 +43,7 @@ appimageTools.wrapType2 {
     substituteInPlace $out/share/applications/${pname}.desktop \
       --replace "Exec=AppRun" "Exec=${pname}"
 
-    sed -i 's/^Comment=/.*/Comment=Keyboard-first local Markdown notes/' $out/share/applications/${pname}.desktop
+    sed -i 's/^Comment=.*/Comment=Keyboard-first local Markdown notes/' $out/share/applications/${pname}.desktop
 
     cp -r ${appImageContents}/usr/share/icons $out/share || true
   '';
