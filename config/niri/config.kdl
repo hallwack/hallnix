@@ -16,7 +16,7 @@ input {
 
 output "eDP-1" {
     mode "1920x1080@120.030"
-    scale 1.05
+    scale 1.00
 
     hot-corners {
         top-left
@@ -81,7 +81,7 @@ window-rule {
 
 window-rule {
     match app-id="helium"
-    match app-id="spotify"
+    match app-id="Spotify"
     match app-id="code"
     match app-id="ferdium"
     
