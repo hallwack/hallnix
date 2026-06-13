@@ -82,7 +82,7 @@ def draw_right_status(
         padding = (
             screen.columns
             - screen.cursor.x
-            - sum(len(c[0]) + len(c[1]) + 5 for c in cells)
+            - sum(len(c[0]) + len(c[1]) + 6 for c in cells)
             - max(len(cells) - 1, 0)
         )
 
@@ -105,10 +105,10 @@ def draw_right_status(
             screen.draw("│")
 
         screen.cursor.fg = as_rgb(color)
-        screen.draw(f" {title}")
+        screen.draw(f"  {title}")
 
         screen.cursor.fg = separator_fg
-        screen.draw(f" ⟵ {symbol} ")
+        screen.draw(f"  {symbol}  ")
 
 
 def create_cells(active_tab: TabAccessor):
