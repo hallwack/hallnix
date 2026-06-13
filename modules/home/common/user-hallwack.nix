@@ -10,6 +10,13 @@
     home.username = "hallwack";
     home.homeDirectory = "/home/hallwack";
     home.stateVersion = "25.05";
+    home.pointerCursor = {
+      package = pkgs.apple-cursor;
+      name = "macOS";
+      size = 26;
+      gtk.enable = true;
+      x11.enable = true;
+    };
 
     home.packages = with pkgs; [
       docker
