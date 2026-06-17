@@ -156,11 +156,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1781276477,
-        "narHash": "sha256-/hAZyEsN5XZ//gsAXq+yFWD3gmvi8xtHDS0M764ds40=",
+        "lastModified": 1781358488,
+        "narHash": "sha256-vL8vZXHKOfKnfMYGgstlToc7OiWxNto5X6OLN1LEZeU=",
         "owner": "hallwack",
         "repo": "hallwack-nix-pkgs",
-        "rev": "248a3de6ffc0b59eb0bb11fada90f01447b4be33",
+        "rev": "20969de6055d6cbf18961551486dacf8f2d0ab97",
         "type": "github"
       },
       "original": {
