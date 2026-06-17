@@ -1,8 +1,9 @@
-{ config
-, inputs
-, self
-, lib
-, ...
+{
+  config,
+  inputs,
+  self,
+  lib,
+  ...
 }:
 let
   repoRoot = "/home/hallwack/hallnix";
@@ -12,10 +13,14 @@ in
   flake.nixosConfigurations.hallnet = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     specialArgs = {
-      inherit repoRoot self lib system;
+      inherit
+        repoRoot
+        self
+        lib
+        system
+        ;
       inherit (inputs) nur;
-      appleFonts =
-        inputs.apple-fonts.packages.${system};
+      appleFonts = inputs.apple-fonts.packages.${system};
       codex = inputs.codex-cli-nix.packages.${system}.default;
     };
     modules = [
@@ -23,10 +28,15 @@ in
       {
         nixpkgs.config.allowUnfree = true;
       }
+      {
+        desktop-gnome.enable = true;
+        desktop-niri.enable = true;
+      }
       inputs.nur.modules.nixos.default
       inputs.home-manager.nixosModules.home-manager
       config.flake.modules.nixos.base
       config.flake.modules.nixos.desktop-gnome
+      config.flake.modules.nixos.desktop-hyprland
       config.flake.modules.nixos.desktop-niri
       config.flake.modules.nixos.audio
       config.flake.modules.nixos.bluetooth
@@ -51,14 +61,14 @@ in
             config.flake.modules.homeManager.ghostty
             config.flake.modules.homeManager.kitty
             config.flake.modules.homeManager.neovim
+            config.flake.modules.homeManager.desktop-hyprland
             config.flake.modules.homeManager.niri
             config.flake.modules.homeManager.noctalia
           ];
           users.hallwack = { };
           extraSpecialArgs = {
             inherit repoRoot self inputs;
-            appleFonts =
-              inputs.apple-fonts.packages.${system};
+            appleFonts = inputs.apple-fonts.packages.${system};
             codex = inputs.codex-cli-nix.packages.${system}.default;
           };
         };
