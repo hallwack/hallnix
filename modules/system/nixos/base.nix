@@ -17,13 +17,13 @@
         "nix-command"
         "flakes"
       ];
-      nix.gc = {
+      /* nix.gc = {
         automatic = true;
         dates = "weekly";
         options = "--delete-older-than 7d";
         persistent = true;
         randomizedDelaySec = "45min";
-      };
+      }; */
 
       services.printing.enable = true;
       services.openssh.enable = true;
@@ -44,6 +44,7 @@
         fastfetch
         btop
         libnotify
+        fzf
       ];
 
       system.stateVersion = "25.05";
