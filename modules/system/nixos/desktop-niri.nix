@@ -4,35 +4,49 @@
 {
   flake.modules.nixos.desktop-niri =
     {
+      config,
+      lib,
       pkgs,
       ...
     }:
+    let
+      cfg = config.desktop-niri;
+    in
     {
-      programs.niri.enable = true;
+      options.desktop-niri.enable = lib.mkEnableOption "Niri desktop";
 
-      security.polkit.enable = true;
-      services.gnome.gnome-keyring.enable = true;
+      config = lib.mkIf cfg.enable {
+        programs.niri.enable = true;
 
-      xdg.portal = {
-        enable = true;
-        xdgOpenUsePortal = true;
-        extraPortals = with pkgs; [
-          xdg-desktop-portal-gnome
-          xdg-desktop-portal-gtk
-        ];
-        config.niri = {
-          default = [ "gnome" "gtk" ];
-          "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+        home-manager.users.hallwack.desktop-niri.enable = lib.mkDefault true;
+
+        security.polkit.enable = true;
+        services.gnome.gnome-keyring.enable = true;
+
+        xdg.portal = {
+          enable = true;
+          xdgOpenUsePortal = true;
+          extraPortals = with pkgs; [
+            xdg-desktop-portal-gnome
+            xdg-desktop-portal-gtk
+          ];
+          config.niri = {
+            default = [
+              "gnome"
+              "gtk"
+            ];
+            "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+          };
         };
-      };
 
-      environment.systemPackages = with pkgs; [
-        xwayland-satellite
-        brightnessctl
-        fuzzel
-        apple-cursor
-        brave
-        wl-clipboard
-      ];
+        environment.systemPackages = with pkgs; [
+          xwayland-satellite
+          brightnessctl
+          fuzzel
+          apple-cursor
+          brave
+          wl-clipboard
+        ];
+      };
     };
 }
