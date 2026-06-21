@@ -36,7 +36,7 @@
       ferdium
 
       inputs.hallnix.packages.${pkgs.stdenv.hostPlatform.system}.helium-browser
-      inputs.hallnix.packages.${pkgs.stdenv.hostPlatform.system}.zennotes
+      inputs.zennotes.packages.${pkgs.system}.zennotes-desktop
     ];
 
     programs.home-manager.enable = true;
