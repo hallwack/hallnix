@@ -42,7 +42,7 @@
         environment.systemPackages = with pkgs; [
           xwayland-satellite
           brightnessctl
-          fuzzel
+          playerctl
           apple-cursor
           brave
           wl-clipboard

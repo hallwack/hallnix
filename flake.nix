@@ -6,6 +6,7 @@
     nur.url = "github:nix-community/NUR";
     flake-parts.url = "github:hercules-ci/flake-parts";
     hallnix.url = "github:hallwack/hallwack-nix-pkgs";
+    zennotes.url = "github:ZenNotes/zennotes";
     noctalia = {
       url = "github:noctalia-dev/noctalia/legacy-v4";
       inputs.nixpkgs.follows = "nixpkgs";
