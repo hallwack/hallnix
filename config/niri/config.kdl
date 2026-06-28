@@ -81,7 +81,7 @@ window-rule {
 
 window-rule {
     match app-id="helium"
-    match app-id="Spotify"
+    match app-id="spotify"
     match app-id="code"
     match app-id="ferdium"
     
