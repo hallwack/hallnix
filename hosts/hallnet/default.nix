@@ -16,7 +16,6 @@ in
       inherit
         repoRoot
         self
-        lib
         system
         ;
       inherit (inputs) nur;
