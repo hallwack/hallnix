@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  username,
   ...
 }:
 
@@ -11,8 +10,6 @@
 
   config = lib.mkIf config.hallwack.desktop.niri.enable {
     programs.niri.enable = true;
-
-    home-manager.users.${username}.desktop-niri.enable = lib.mkDefault true;
 
     security.polkit.enable = true;
     services.gnome.gnome-keyring.enable = true;
