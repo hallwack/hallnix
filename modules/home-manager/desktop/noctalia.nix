@@ -6,13 +6,14 @@
 }:
 
 {
+  imports = [
+    inputs.noctalia.homeModules.default
+  ];
+
   options.hallwack.desktop.noctalia.enable =
     lib.mkEnableOption "Enable hallwack desktop noctalia module";
 
   config = lib.mkIf config.hallwack.desktop.noctalia.enable {
-    imports = [
-      inputs.noctalia.homeModules.default
-    ];
 
     programs.noctalia-shell = {
       enable = true;
