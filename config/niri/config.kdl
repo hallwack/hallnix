@@ -1,4 +1,4 @@
-spawn-at-startup "noctalia-shell"
+spawn-at-startup "noctalia"
 
 input {
     keyboard {
@@ -95,11 +95,11 @@ binds {
     Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn-sh "kitty -e"; }
     Mod+Return hotkey-overlay-title="Open a Terminal: ghostty"  { spawn-sh "ghostty"; }
     Mod+B hotkey-overlay-title="Open a Browser: Helium" { spawn "helium-browser"; }
-    Mod+Space hotkey-overlay-title="Run a Launcher" { spawn-sh "noctalia-shell ipc call launcher toggle"; }
-    Mod+Alt+L hotkey-overlay-title="Lock the Screen" { spawn-sh "noctalia-shell ipc call lockScreen lock"; }
+    Mod+Space hotkey-overlay-title="Run a Launcher" { spawn-sh "noctalia msg panel-toggle launcher"; }
+    Mod+Alt+L hotkey-overlay-title="Lock the Screen" { spawn-sh "noctalia msg session lock"; }
 
-    Mod+W hotkey-overlay-title="Launcher (windows)" { spawn-sh "noctalia-shell ipc call launcher windows"; }
-    Mod+V hotkey-overlay-title="Launcher (clipboard)" { spawn-sh "noctalia-shell ipc call launcher clipboard"; }
+    Mod+W hotkey-overlay-title="Launcher (windows)" { spawn-sh "noctalia msg window-switcher"; }
+    Mod+V hotkey-overlay-title="Launcher (clipboard)" { spawn-sh "noctalia msg panel-toggle clipboard"; }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.0"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05-"; }

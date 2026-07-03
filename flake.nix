@@ -13,7 +13,7 @@
     zennotes.url = "github:ZenNotes/zennotes";
 
     noctalia = {
-      url = "github:noctalia-dev/noctalia/legacy-v4";
+      url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
