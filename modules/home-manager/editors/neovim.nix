@@ -11,6 +11,8 @@
 
   config = lib.mkIf config.hallwack.editors.neovim.enable {
     home.packages = with pkgs; [
+      neovim
+
       # Treesitter Build tools
       tree-sitter
       gcc
