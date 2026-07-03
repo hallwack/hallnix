@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  repoRoot,
   ...
 }:
 
@@ -9,5 +10,8 @@
     lib.mkEnableOption "Enable hallwack desktop hyprland module";
 
   config = lib.mkIf config.hallwack.desktop.hyprland.enable {
+    xdg.configFile."hypr".source = lib.mkForce (
+      config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/hypr"
+    );
   };
 }
