@@ -32,8 +32,8 @@
         obsidian
         ferdium
 
-        inputs.hallnix.packages.${pkgs.system}.helium-browser
-        inputs.zennotes.packages.${pkgs.system}.zennotes-desktop
+        inputs.hallnix.packages.${pkgs.stdenv.hostPlatform.system}.helium-browser
+        inputs.zennotes.packages.${pkgs.stdenv.hostPlatform.system}.zennotes-desktop
       ];
     };
 
