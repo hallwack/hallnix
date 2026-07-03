@@ -1,28 +1,40 @@
-{ config, lib, modulesPath, ... }:
+{
+  config,
+  lib,
+  modulesPath,
+  ...
+}:
 
 {
-  imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+  ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/d76a0b7d-3bf0-42d4-b153-4fe5e6be2abc";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/d76a0b7d-3bf0-42d4-b153-4fe5e6be2abc";
+    fsType = "ext4";
+  };
 
-  fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/4e604e94-eb51-48f3-b3e8-b2c7de52955e";
-      fsType = "ext4";
-    };
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/4e604e94-eb51-48f3-b3e8-b2c7de52955e";
+    fsType = "ext4";
+  };
 
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/c1d9439a-476d-44d4-96aa-eeaba938b1e6"; }
-    ];
+  swapDevices = [
+    { device = "/dev/disk/by-uuid/c1d9439a-476d-44d4-96aa-eeaba938b1e6"; }
+  ];
 
   networking.useDHCP = lib.mkDefault true;
 

@@ -1,339 +1,287 @@
-# Migrating From A Traditional Structure To Dendritic
+# Migrating To The Current Dendritic Layout
 
-This guide explains how to move from a traditional NixOS repository layout
-to the `dendritic/` structure in this repo.
+This guide describes the migration model used by the `fix/dendritic-restructure` branch.
 
-Traditional layout usually looks like this:
+The current layout is no longer based on `flake.modules.nixos.*` and `flake.modules.homeManager.*`. Feature modules are now ordinary NixOS and Home Manager modules that are auto-imported from their module roots.
 
-```text
-flake.nix
-configuration.nix
-hardware-configuration.nix
-home-manager.nix
-modules/
-core/
-config/
-```
-
-The dendritic layout in this repo looks like this:
+## Target Layout
 
 ```text
-dendritic/
-  flake.nix
-  hosts/
-  modules/
-    system/
-      nixos/
-    home/
-      common/
-      linux/
+.
+├── flake.nix
+├── hosts/
+│   └── hallnet/
+│       ├── default.nix
+│       ├── configuration.nix
+│       ├── home.nix
+│       └── hardware-configuration.nix
+├── modules/
+│   ├── nixos/
+│   │   ├── default.nix
+│   │   ├── desktop/
+│   │   ├── services/
+│   │   └── system/
+│   └── home-manager/
+│       ├── default.nix
+│       ├── cli/
+│       ├── desktop/
+│       ├── editors/
+│       ├── terminal/
+│       └── user/
+├── config/
+└── pkgs/
 ```
 
 ## Main Idea
 
-Traditional structure groups files by entrypoint or by technical layer.
+The migration separates three concerns:
 
-Examples:
+- `flake.nix` defines inputs and imports host entry points.
+- `hosts/<name>/` decides what a machine and user enable.
+- `modules/` contains reusable feature modules.
 
-- one big `configuration.nix`
-- one big `home-manager.nix`
-- a `modules/` directory with mixed ownership
+The host should mostly enable options. The modules should contain the implementation.
 
-Dendritic structure groups files by ownership and reuse.
+## Step 1. Thin Out `flake.nix`
 
-Examples:
+The flake should import the host entry point:
 
-- Bluetooth owns Bluetooth
-- Ghostty owns Ghostty package and config
-- Neovim owns Neovim package and config
-- Node.js owns Node.js tooling
-- a Linux desktop module owns only Linux desktop concerns
-
-## What You Are Trying To Achieve
-
-By the end of the migration:
-
-- host files are thin
-- `flake.nix` is composition, not the whole config
-- system concerns live in `modules/system/nixos/`
-- reusable user concerns live in `modules/home/common/`
-- Linux-only desktop concerns live in `modules/home/linux/`
-- each app or language can own its own package and config
-
-## Recommended Migration Strategy
-
-Do not rewrite everything in one step.
-
-Migrate in this order:
-
-1. create a parallel dendritic tree
-2. move host assembly first
-3. split system concerns
-4. split Home Manager concerns
-5. split app-owned config
-6. split language toolchains
-7. remove the old duplicated files only after the new tree is stable
-
-This is exactly why the `dendritic/` directory exists in parallel in this repo.
-
-## Step 1. Create A Parallel Tree
-
-Do not replace the old root config immediately.
-
-Create a separate tree:
-
-```text
-dendritic/
-  flake.nix
-  hosts/
-  modules/
+```nix
+imports = [
+  ./hosts/hallnet
+];
 ```
 
-This lets you compare:
+It should not manually import every feature module.
 
-- old root config
-- new dendritic layout
+## Step 2. Split The Host Directory
 
-without breaking the working system during the refactor.
+Use three host files:
 
-## Step 2. Move The Host Entrypoint First
+```text
+hosts/hallnet/default.nix
+hosts/hallnet/configuration.nix
+hosts/hallnet/home.nix
+```
 
-In the traditional structure, the flake often points directly at:
+Responsibilities:
 
-- `./configuration.nix`
+- `default.nix`: creates `flake.nixosConfigurations.hallnet`.
+- `configuration.nix`: imports hardware and enables NixOS feature flags.
+- `home.nix`: sets Home Manager identity and enables user feature flags.
 
-In dendritic, the host file should be thin and live under `hosts/`.
+## Step 3. Auto-Import NixOS Modules
+
+Use `modules/nixos/default.nix` to import all NixOS modules under `modules/nixos`.
+
+Feature modules should be ordinary NixOS modules:
+
+```nix
+{ config, lib, pkgs, ... }:
+
+{
+  options.hallwack.system.core.enable =
+    lib.mkEnableOption "Enable core system configuration";
+
+  config = lib.mkIf config.hallwack.system.core.enable {
+    networking.networkmanager.enable = true;
+  };
+}
+```
+
+The host imports the module root:
+
+```nix
+modules = [
+  ./configuration.nix
+  ../../modules/nixos
+];
+```
+
+## Step 4. Auto-Import Home Manager Modules
+
+Use `modules/home-manager/default.nix` to import all Home Manager modules under `modules/home-manager`.
+
+Feature modules should be ordinary Home Manager modules:
+
+```nix
+{ config, lib, pkgs, ... }:
+
+{
+  options.hallwack.cli.git.enable =
+    lib.mkEnableOption "Enable Git configuration";
+
+  config = lib.mkIf config.hallwack.cli.git.enable {
+    programs.git.enable = true;
+  };
+}
+```
+
+The host passes the module root to Home Manager:
+
+```nix
+home-manager.sharedModules = [
+  ../../modules/home-manager
+];
+```
+
+## Step 5. Move Activation To Host Files
+
+System activation belongs in:
+
+```text
+hosts/hallnet/configuration.nix
+```
 
 Example:
 
-- [hosts/hallnet/default.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/hosts/hallnet/default.nix:1)
-
-The host should mostly:
-
-- declare the system type
-- pass `specialArgs`
-- import the hardware config
-- assemble modules
-
-It should not contain large chunks of actual system logic.
-
-## Step 3. Split System Concerns
-
-Take the large `configuration.nix` and split it by functionality into
-`modules/system/nixos/`.
-
-Examples from this repo:
-
-- [base.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/base.nix:1)
-- [audio.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/audio.nix:1)
-- [bluetooth.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/bluetooth.nix:1)
-- [fonts.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/fonts.nix:1)
-- [desktop-hyprland.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/desktop-hyprland.nix:1)
-- [desktop-niri.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/desktop-niri.nix:1)
-
-Good candidates for system modules:
-
-- boot loader
-- networking
-- audio
-- bluetooth
-- fonts
-- display manager
-- window manager enablement
-- Linux services
-- hardware-related setup
-
-## Step 4. Split Home Manager Concerns
-
-Take the large `home-manager.nix` and split it by reuse level.
-
-Put reusable user modules in:
-
-- `modules/home/common/`
-
-Put Linux desktop-only user modules in:
-
-- `modules/home/linux/`
-
-Examples:
-
-- [shell.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/shell.nix:1)
-- [git.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/git.nix:1)
-- [desktop-hyprland.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/linux/desktop-hyprland.nix:1)
-- [niri/default.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/linux/niri/default.nix:1)
-
-## Step 5. Split App-Owned Modules
-
-If a package and its config belong together, give that app its own module.
-
-Recommended pattern:
-
-```text
-modules/home/common/<app>/
-  default.nix
-  config/
+```nix
+hallwack.system.core.enable = true;
+hallwack.system.audio.enable = true;
+hallwack.services.openssh.enable = true;
+hallwack.desktop.niri.enable = true;
 ```
 
-Examples:
+User activation belongs in:
 
-- [ghostty](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/ghostty/default.nix:1)
-- [kitty](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/kitty/default.nix:1)
-- [neovim](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/neovim/default.nix:1)
+```text
+hosts/hallnet/home.nix
+```
 
-This is better than one giant Home Manager file with many unrelated
-`xdg.configFile` entries.
+Example:
 
-## Step 6. Split Language Toolchains
+```nix
+hallwack.user.enable = true;
+hallwack.cli.git.enable = true;
+hallwack.cli.shell.enable = true;
+hallwack.editors.neovim.enable = true;
+hallwack.desktop.niri.enable = true;
+```
 
-If a set of packages belongs to one ecosystem, move it out of the generic
-user package list.
+## Step 6. Map Old Modules To New Locations
 
-Examples:
+Old locations:
 
-- [nodejs.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/nodejs.nix:1)
-- [rust.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/rust.nix:1)
-- [bun.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/bun.nix:1)
+```text
+modules/system/nixos/
+modules/home/common/
+modules/home/linux/
+```
 
-This makes it obvious where to add:
+New locations:
 
-- Node.js tools
-- Rust tools
-- Bun tools
-- future Go/Python/Java tools
+```text
+modules/nixos/system/
+modules/nixos/services/
+modules/nixos/desktop/
+modules/home-manager/user/
+modules/home-manager/cli/
+modules/home-manager/editors/
+modules/home-manager/terminal/
+modules/home-manager/desktop/
+```
 
-## Step 7. Convert The Flake To Composition
+Example mapping:
 
-In a traditional layout, `flake.nix` often just calls `nixosSystem`.
+```text
+modules/system/nixos/base.nix              -> modules/nixos/system/core.nix
+modules/system/nixos/audio.nix             -> modules/nixos/system/audio.nix
+modules/system/nixos/bluetooth.nix         -> modules/nixos/system/bluetooth.nix
+modules/system/nixos/user-hallwack.nix     -> modules/nixos/system/users.nix
+modules/system/nixos/desktop-gnome.nix     -> modules/nixos/desktop/gnome.nix
+modules/system/nixos/desktop-niri.nix      -> modules/nixos/desktop/niri.nix
+modules/home/common/user-hallwack.nix      -> modules/home-manager/user/hallwack.nix
+modules/home/common/git.nix                -> modules/home-manager/cli/git.nix
+modules/home/common/shell.nix              -> modules/home-manager/cli/shell.nix
+modules/home/common/neovim/default.nix     -> modules/home-manager/editors/neovim.nix
+modules/home/common/ghostty/default.nix    -> modules/home-manager/terminal/ghostty.nix
+modules/home/common/kitty/default.nix      -> modules/home-manager/terminal/kitty.nix
+modules/home/linux/niri/default.nix        -> modules/home-manager/desktop/niri.nix
+modules/home/linux/noctalia/default.nix    -> modules/home-manager/desktop/noctalia.nix
+```
 
-In the dendritic example, `flake.nix` uses `flake-parts` and imports module
-files that export reusable outputs.
+## Step 7. Keep Package Ownership Clear
 
-See:
+Use these ownership rules:
 
-- [dendritic/flake.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/flake.nix:1)
-
-The important change is:
-
-- before: the flake directly held most of the assembly
-- after: modules export `flake.modules.nixos.*` and `flake.modules.homeManager.*`
-
-## Step 8. Wire Modules Into The Host
-
-After splitting the modules, assemble them in the host file.
-
-System modules go into the `nixosSystem` module list.
-
-Home Manager modules go into `home-manager.sharedModules`.
-
-See:
-
-- [hosts/hallnet/default.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/hosts/hallnet/default.nix:1)
-
-## Migration Mapping For This Repo
-
-Here is how the old-style files in this repo map into the dendritic tree.
-
-Old:
-
-- `configuration.nix`
-- `home-manager.nix`
-- `core/*.nix`
-- `modules/programs/*.nix`
-- `config/*`
-
-New:
-
-- `configuration.nix` system pieces -> `modules/system/nixos/*.nix`
-- `home-manager.nix` generic shell/editor/app pieces -> `modules/home/common/*`
-- `home-manager.nix` Linux desktop pieces -> `modules/home/linux/*`
-- app config trees -> `modules/home/common/<app>/config/` or `modules/home/linux/<app>/config/`
-- host assembly -> `hosts/hallnet/default.nix`
-
-## How To Decide Where Something Goes
-
-Ask these questions in order:
-
-1. Does the OS itself need to know about this?
-   Then it goes in `modules/system/nixos/`.
-
-2. Is this a user package or user config that may work on macOS later?
-   Then it goes in `modules/home/common/`.
-
-3. Is this tied to Linux desktop or Wayland?
-   Then it goes in `modules/home/linux/`.
-
-4. Does this belong to one app?
-   Then give the app its own module directory.
-
-5. Does this belong to one language ecosystem?
-   Then give that ecosystem its own module.
+- NixOS packages required by services or the OS go in `environment.systemPackages`.
+- User packages go in `home.packages`.
+- Dotfiles go in `config/` and are linked from Home Manager modules.
+- Language toolchains should have their own `modules/home-manager/cli/<runtime>.nix`.
+- App config should be owned by the app module.
 
 ## Common Migration Mistakes
 
-### 1. Keeping duplicate active entrypoints
+### Importing Non-Modules
 
-Bad:
+Because `modules/nixos/default.nix` and `modules/home-manager/default.nix` auto-import recursively, every `.nix` file under those trees must be a valid module unless excluded.
 
-- root `configuration.nix`
-- `hosts/hallnet/default.nix`
-- both describe the same machine
+Use `_` directories for helpers:
 
-Pick one active tree once migration is complete.
+```text
+modules/home-manager/_lib/
+modules/nixos/_lib/
+```
 
-### 2. Leaving unrelated packages in generic user lists
+### Putting `imports` Inside `config`
 
-Bad:
+Module imports belong at module top-level:
 
-- language toolchains in `user-hallwack.nix`
-- app-specific helpers in random generic modules
+```nix
+{
+  imports = [
+    inputs.noctalia.homeModules.default
+  ];
 
-Move them to the module that owns them.
+  config = lib.mkIf cfg.enable {
+    ...
+  };
+}
+```
 
-### 3. Letting one desktop module own unrelated apps
+Do not put `imports` inside `config = lib.mkIf ...`.
 
-Bad:
+### Mixing NixOS And Home Manager Options
 
-- Hyprland module owns Kitty
-- Hyprland module owns Ghostty
+These belong in NixOS modules:
 
-If Kitty or Ghostty are cross-platform apps, give them their own modules.
+```nix
+services.openssh.enable
+programs.niri.enable
+environment.systemPackages
+users.users
+```
 
-### 4. Migrating everything at once
+These belong in Home Manager modules:
 
-Bad:
+```nix
+programs.git.enable
+xdg.configFile
+home.packages
+home.sessionVariables
+```
 
-- giant rewrite
-- no comparison point
-- hard to debug
+### Forgetting Both Desktop Layers
 
-Prefer the parallel migration approach.
+Some desktop features have two layers:
 
-## Suggested Order For Your Existing Repo
+```text
+modules/nixos/desktop/niri.nix
+modules/home-manager/desktop/niri.nix
+```
 
-For this repo specifically, the clean order is:
+Enable the system layer in `configuration.nix` and the user layer in `home.nix`.
 
-1. keep the old root config untouched
-2. create `dendritic/`
-3. move host assembly to `dendritic/hosts/hallnet/default.nix`
-4. split `configuration.nix` into `modules/system/nixos/`
-5. split `home-manager.nix` into `modules/home/common/` and `modules/home/linux/`
-6. create app-owned directories for Ghostty, Kitty, and Neovim
-7. create language-owned modules for Node.js, Rust, and Bun
-8. only then consider switching your real machine over
+## Validation
 
-## When The Migration Is Finished
+After migration, check:
 
-A mature dendritic tree should have these properties:
+```sh
+nix flake check --no-build
+```
 
-- a thin host file
-- a compositional `flake.nix`
-- no duplicate active config trees
-- clear ownership for each app and ecosystem
-- obvious places to add future packages
-- reusable Home Manager modules for future macOS support
+Then rebuild:
 
-## Related Documents
-
-- package placement guide: [ADDING_PACKAGES.md](/home/hallwack/Documents/dev/nix/hallnix/dendritic/ADDING_PACKAGES.md:1)
-- macOS implementation guide: [MACOS.md](/home/hallwack/Documents/dev/nix/hallnix/dendritic/MACOS.md:1)
-- overview: [README.md](/home/hallwack/Documents/dev/nix/hallnix/dendritic/README.md:1)
+```sh
+sudo nixos-rebuild switch --flake .#hallnet
+```

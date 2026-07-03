@@ -1,17 +1,32 @@
-# Struktur Repository
+# Repository Structure
 
-Repository ini berisi konfigurasi NixOS berbasis `flake-parts`. Struktur utamanya memisahkan entrypoint host, module NixOS, module Home Manager, dotfiles, dan package lokal.
+This repository contains a NixOS configuration built around `flake-parts`, host entry points, ordinary NixOS modules, ordinary Home Manager modules, dotfiles, and local packages.
 
-## Ringkasan
+## Overview
 
 ```text
 .
 ├── flake.nix
 ├── flake.lock
 ├── hosts/
+│   └── hallnet/
+│       ├── default.nix
+│       ├── configuration.nix
+│       ├── home.nix
+│       └── hardware-configuration.nix
 ├── modules/
-│   ├── system/
-│   └── home/
+│   ├── nixos/
+│   │   ├── default.nix
+│   │   ├── desktop/
+│   │   ├── services/
+│   │   └── system/
+│   └── home-manager/
+│       ├── default.nix
+│       ├── cli/
+│       ├── desktop/
+│       ├── editors/
+│       ├── terminal/
+│       └── user/
 ├── config/
 ├── pkgs/
 └── *.md
@@ -19,493 +34,294 @@ Repository ini berisi konfigurasi NixOS berbasis `flake-parts`. Struktur utamany
 
 ## `flake.nix`
 
-`flake.nix` adalah entrypoint utama repository.
+`flake.nix` is the repository entry point.
 
-Perannya:
+It:
 
-- Mendeklarasikan input flake seperti `nixpkgs`, `home-manager`, `flake-parts`, `nur`, dan dependency lain.
-- Menggunakan `flake-parts.lib.mkFlake` sebagai kerangka utama.
-- Mengimpor semua module yang mendefinisikan output flake.
-- Mengekspos formatter per-system.
+- declares inputs such as `nixpkgs`, `home-manager`, `flake-parts`, `nur`, `noctalia`, and other dependencies
+- uses `flake-parts.lib.mkFlake`
+- imports host entry points
+- exposes per-system outputs such as the formatter
 
-Module yang ada di `modules/` tidak langsung menjadi konfigurasi aktif hanya karena ada di filesystem. Module tersebut harus diimpor di `flake.nix`, lalu dipakai oleh host melalui `config.flake.modules.*`.
+It does not manually import every feature module. The current flake imports:
 
-## `flake.lock`
-
-`flake.lock` menyimpan versi pasti dari semua input flake.
-
-Perannya:
-
-- Membuat build reproducible.
-- Mengunci revision `nixpkgs`, `home-manager`, dan input lain.
-- Berubah saat menjalankan update input, misalnya `nix flake update`.
+```nix
+imports = [
+  ./hosts/hallnet
+];
+```
 
 ## `hosts/`
 
-Direktori `hosts/` berisi entrypoint untuk setiap mesin.
+`hosts/` contains one directory per machine.
 
-Struktur saat ini:
+Current host:
 
 ```text
-hosts/
-└── hallnet/
-    ├── default.nix
-    └── hardware-configuration.nix
+hosts/hallnet/
+├── default.nix
+├── configuration.nix
+├── home.nix
+└── hardware-configuration.nix
 ```
 
 ### `hosts/hallnet/default.nix`
 
-File ini mendefinisikan konfigurasi NixOS untuk host `hallnet`.
+This is the flake-parts host entry point.
 
-Perannya:
+It:
 
-- Membuat `flake.nixosConfigurations.hallnet`.
-- Memanggil `inputs.nixpkgs.lib.nixosSystem`.
-- Menentukan `system`, misalnya `x86_64-linux`.
-- Mengatur `specialArgs` untuk nilai global seperti `repoRoot`, `self`, `lib`, `appleFonts`, dan `codex`.
-- Mengimpor module NixOS dari `config.flake.modules.nixos.*`.
-- Mengaktifkan Home Manager melalui `inputs.home-manager.nixosModules.home-manager`.
-- Mengatur `home-manager.sharedModules` untuk module Home Manager user.
-- Menjadi tempat deklarasi feature flag host, misalnya `desktop-niri.enable = true;`.
+- defines `flake.nixosConfigurations.hallnet`
+- calls `inputs.nixpkgs.lib.nixosSystem`
+- sets `system`, `username`, `hostname`, and `repoRoot`
+- passes `specialArgs`
+- imports `./configuration.nix`
+- imports `../../modules/nixos`
+- enables Home Manager through `inputs.home-manager.nixosModules.home-manager`
+- passes `../../modules/home-manager` to `home-manager.sharedModules`
+- imports `./home.nix` as the Home Manager user config
+
+### `hosts/hallnet/configuration.nix`
+
+This is the NixOS host profile.
+
+It:
+
+- imports `hardware-configuration.nix`
+- sets `networking.hostName`
+- enables `nixpkgs.config.allowUnfree`
+- enables NixOS feature options
+
+Example:
+
+```nix
+hallwack.system.core.enable = true;
+hallwack.system.audio.enable = true;
+hallwack.services.openssh.enable = true;
+hallwack.desktop.gnome.enable = true;
+hallwack.desktop.niri.enable = true;
+```
+
+### `hosts/hallnet/home.nix`
+
+This is the Home Manager user profile.
+
+It:
+
+- sets `home.username`
+- sets `home.homeDirectory`
+- sets `home.stateVersion`
+- enables Home Manager feature options
+
+Example:
+
+```nix
+hallwack.user.enable = true;
+hallwack.cli.git.enable = true;
+hallwack.cli.shell.enable = true;
+hallwack.editors.neovim.enable = true;
+hallwack.terminal.kitty.enable = true;
+hallwack.desktop.niri.enable = true;
+```
 
 ### `hosts/hallnet/hardware-configuration.nix`
 
-File ini berisi konfigurasi hardware hasil generate NixOS.
+This is the generated NixOS hardware file.
 
-Perannya:
+It defines filesystems, initrd modules, kernel modules, swap devices, and hardware defaults. Avoid manual edits unless the hardware or disk layout changes.
 
-- Mendefinisikan filesystem, disk, initrd, kernel modules, dan opsi hardware lain.
-- Biasanya tidak diedit manual kecuali ada perubahan hardware atau layout disk.
+## `modules/nixos/`
 
-## `modules/system/nixos/`
+`modules/nixos/` contains NixOS modules.
 
-Direktori ini berisi module NixOS/system-level.
-
-Struktur saat ini:
+Current structure:
 
 ```text
-modules/system/nixos/
-├── audio.nix
-├── base.nix
-├── bluetooth.nix
-├── desktop-gnome.nix
-├── desktop-hyprland.nix
-├── desktop-niri.nix
-├── fonts.nix
-├── pcsc.nix
-├── shell.nix
-└── user-hallwack.nix
+modules/nixos/
+├── default.nix
+├── desktop/
+│   ├── gnome.nix
+│   └── niri.nix
+├── services/
+│   └── openssh.nix
+└── system/
+    ├── audio.nix
+    ├── bluetooth.nix
+    ├── core.nix
+    ├── fonts.nix
+    ├── pcsc.nix
+    ├── shell.nix
+    └── users.nix
 ```
 
-Peran umum:
+`modules/nixos/default.nix` auto-imports the modules below it.
 
-- Mengatur konfigurasi yang berada di level sistem.
-- Mengaktifkan service NixOS.
-- Menambahkan package system-wide.
-- Mengatur user system, audio, bluetooth, font, desktop environment, dan shell tooling.
-- Mengekspor module sebagai `flake.modules.nixos.<nama>`.
-
-Contoh pola:
+NixOS modules should define `options` and conditionally apply `config`:
 
 ```nix
+{ config, lib, pkgs, ... }:
+
 {
-  flake.modules.nixos.shell = { ... }: {
-    programs.zsh.enable = true;
+  options.hallwack.system.example.enable =
+    lib.mkEnableOption "Enable example system module";
+
+  config = lib.mkIf config.hallwack.system.example.enable {
+    environment.systemPackages = with pkgs; [
+      example
+    ];
   };
 }
 ```
 
-### `base.nix`
+Use NixOS modules for:
 
-Konfigurasi dasar host.
+- `boot.*`
+- `networking.*`
+- `users.users.*`
+- `services.*`
+- `hardware.*`
+- `security.*`
+- `programs.niri` or other system compositor enablement
+- `environment.systemPackages`
+- system fonts
+- system services
 
-Biasanya berisi:
+## `modules/home-manager/`
 
-- Hostname.
-- NetworkManager.
-- Timezone.
-- Bootloader.
-- Nix settings.
-- Garbage collection.
-- Service dasar seperti printing dan SSH.
-- Package CLI dasar.
-- `system.stateVersion`.
+`modules/home-manager/` contains Home Manager modules.
 
-### `desktop-gnome.nix`
-
-Konfigurasi sistem untuk GNOME.
-
-Biasanya berisi:
-
-- X server.
-- Keyboard layout.
-- GNOME desktop manager.
-- GDM display manager.
-- Dconf.
-- Libinput.
-
-### `desktop-niri.nix`
-
-Konfigurasi sistem untuk Niri.
-
-Biasanya berisi:
-
-- `programs.niri.enable`.
-- Polkit.
-- GNOME keyring.
-- XDG portal.
-- Package pendukung Wayland/Niri.
-- Forwarding flag ke Home Manager user jika dipakai.
-
-### `desktop-hyprland.nix`
-
-Konfigurasi sistem untuk Hyprland.
-
-Biasanya berisi:
-
-- `programs.hyprland.enable`.
-- XWayland.
-- Package pendukung seperti `waybar`, `rofi`, `mako`, `hyprlock`, dan tool Wayland lain.
-- Forwarding flag ke Home Manager user jika dipakai.
-
-### `audio.nix`
-
-Konfigurasi audio system.
-
-Biasanya berisi:
-
-- PipeWire.
-- ALSA.
-- PulseAudio compatibility.
-- Pinentry untuk GnuPG agent.
-
-### `bluetooth.nix`
-
-Konfigurasi Bluetooth system.
-
-Biasanya berisi:
-
-- `hardware.bluetooth`.
-- Blueman service.
-- Package Bluetooth seperti `bluez`, `bluez-tools`, dan `blueman`.
-
-### `fonts.nix`
-
-Konfigurasi font system.
-
-Biasanya berisi:
-
-- Fontconfig.
-- Nerd Fonts.
-- Apple fonts.
-- Noto fonts.
-- Default font families.
-
-### `pcsc.nix`
-
-Konfigurasi smart card / PCSC.
-
-Biasanya berisi:
-
-- Group `plugdev`.
-- `services.pcscd`.
-- CCID plugin.
-- Blacklist kernel module NFC tertentu.
-
-### `shell.nix`
-
-Konfigurasi shell dan tooling system.
-
-Saat ini berisi:
-
-- Zsh.
-- Direnv.
-- Nix-direnv.
-- `nh` sebagai Nix helper.
-
-### `user-hallwack.nix`
-
-Konfigurasi user system `hallwack`.
-
-Biasanya berisi:
-
-- User normal.
-- Extra groups.
-- Default shell.
-- Package user di level NixOS.
-
-## `modules/home/`
-
-Direktori ini berisi module Home Manager.
-
-Home Manager mengatur konfigurasi user-level, bukan system-level. Contohnya dotfiles, package user, shell config user, editor config, terminal config, dan app config.
-
-Struktur utama:
+Current structure:
 
 ```text
-modules/home/
-├── common/
-└── linux/
+modules/home-manager/
+├── default.nix
+├── cli/
+│   ├── dev-tools.nix
+│   ├── git.nix
+│   ├── nodejs.nix
+│   ├── rust.nix
+│   └── shell.nix
+├── desktop/
+│   ├── hyprland.nix
+│   ├── niri.nix
+│   └── noctalia.nix
+├── editors/
+│   └── neovim.nix
+├── terminal/
+│   ├── ghostty.nix
+│   └── kitty.nix
+└── user/
+    └── hallwack.nix
 ```
 
-## `modules/home/common/`
+`modules/home-manager/default.nix` auto-imports the modules below it.
 
-Module Home Manager yang bersifat umum dan bisa dipakai lintas platform.
+Home Manager modules should define `options` and conditionally apply `config`:
 
-Struktur saat ini:
+```nix
+{ config, lib, pkgs, ... }:
+
+{
+  options.hallwack.cli.example.enable =
+    lib.mkEnableOption "Enable example user module";
+
+  config = lib.mkIf config.hallwack.cli.example.enable {
+    home.packages = with pkgs; [
+      example
+    ];
+  };
+}
+```
+
+Use Home Manager modules for:
+
+- `home.*`
+- `home.packages`
+- `programs.git`
+- `programs.zsh`
+- `programs.neovim`
+- `xdg.configFile`
+- `gtk.*`
+- `dconf.*`
+- user-level services
+- user dotfiles
+
+## Auto-Import Rules
+
+Both module roots use the same import pattern:
 
 ```text
-modules/home/common/
-├── bun.nix
-├── dev-tools.nix
-├── ghostty/
-├── git.nix
-├── kitty/
-├── neovim/
-├── nix.nix
-├── nodejs.nix
-├── rust.nix
-├── shell.nix
-└── user-hallwack.nix
+modules/nixos/default.nix
+modules/home-manager/default.nix
 ```
 
-Peran umum:
+The import logic includes every `.nix` file recursively, except:
 
-- Mengatur package dan konfigurasi user-level.
-- Mengekspor module sebagai `flake.modules.homeManager.<nama>`.
-- Dipakai melalui `home-manager.sharedModules`.
+- `default.nix`
+- paths containing `/_`
 
-### `user-hallwack.nix`
-
-Profil Home Manager user `hallwack`.
-
-Biasanya berisi:
-
-- `home.username`.
-- `home.homeDirectory`.
-- `home.stateVersion`.
-- Cursor.
-- Package user.
-- Enable Home Manager.
-- GTK.
-- Dconf user settings.
-
-### `shell.nix`
-
-Konfigurasi shell user.
-
-Biasanya berisi:
-
-- Zsh Home Manager config.
-- Oh My Zsh.
-- Zsh plugin.
-- Alias.
-- History.
-- Starship.
-- Zoxide.
-- Direnv.
-- Symlink config dari `config/zsh` dan `config/starship.toml`.
-
-### `git.nix`
-
-Konfigurasi Git user.
-
-Biasanya berisi:
-
-- Package `git`.
-- Nama user.
-- Email.
-- Default branch.
-
-### `dev-tools.nix`
-
-Tooling development umum.
-
-Saat ini mengatur:
-
-- Fastfetch.
-- Config Fastfetch.
-
-### `nix.nix`
-
-Tooling development untuk Nix.
-
-Biasanya berisi:
-
-- `nixpkgs-fmt`.
-- `nixd`.
-
-### `nodejs.nix`, `bun.nix`, `rust.nix`
-
-Module bahasa pemrograman/runtime.
-
-Perannya:
-
-- `nodejs.nix` mengatur Node.js.
-- `bun.nix` mengatur Bun.
-- `rust.nix` mengatur Rust tooling seperti `rustup`, `cargo-edit`, dan `cargo-watch`.
-
-### `ghostty/`, `kitty/`, `neovim/`
-
-Module aplikasi yang punya konfigurasi lebih dari satu file atau layout khusus.
-
-Perannya:
-
-- Menginstall package terkait.
-- Menghubungkan konfigurasi dari `config/` ke `$HOME/.config`.
-- Memisahkan konfigurasi aplikasi agar module tetap mudah dibaca.
-
-## `modules/home/linux/`
-
-Module Home Manager yang khusus Linux atau desktop Linux.
-
-Struktur saat ini:
-
-```text
-modules/home/linux/
-├── desktop-hyprland.nix
-├── niri/
-└── noctalia/
-```
-
-### `desktop-hyprland.nix`
-
-Konfigurasi user-level untuk Hyprland.
-
-Perannya:
-
-- Menyediakan tempat untuk symlink config Hyprland, Waybar, Rofi, Mako, dan SwayNC.
-- Saat ini sebagian konfigurasi masih berupa komentar.
-
-### `niri/default.nix`
-
-Konfigurasi user-level untuk Niri.
-
-Perannya:
-
-- Menghubungkan `config/niri` ke `$HOME/.config/niri`.
-- Dipakai bersama module system `desktop-niri.nix`.
-
-### `noctalia/default.nix`
-
-Konfigurasi user-level untuk Noctalia shell.
-
-Perannya:
-
-- Mengimpor module Home Manager dari input `noctalia`.
-- Mengatur `programs.noctalia-shell`.
-- Menyimpan setting bar, widget, appearance, behavior, dan desktop widget.
+This means every `.nix` file under those directories must be a valid module unless excluded.
 
 ## `config/`
 
-Direktori `config/` berisi dotfiles atau konfigurasi aplikasi mentah yang akan disymlink oleh Home Manager.
+`config/` stores editable dotfiles.
 
-Struktur utama:
+Examples:
 
 ```text
-config/
-├── ghostty/
-├── hypr/
-├── kitty/
-├── niri/
-├── nvim/
-├── starship.toml
-└── zsh/
+config/ghostty/config
+config/kitty/kitty.conf
+config/niri/config.kdl
+config/nvim/init.lua
+config/starship.toml
+config/zsh/custom.zsh
 ```
 
-Peran umum:
-
-- Menjadi sumber konfigurasi aplikasi.
-- Tidak langsung aktif sendiri.
-- Biasanya dihubungkan ke `$HOME/.config/<app>` melalui `xdg.configFile` di Home Manager.
-
-Contoh:
+Home Manager modules link these files into the user environment, usually with:
 
 ```nix
-xdg.configFile."niri".source =
-  lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/niri");
+config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/<name>"
 ```
 
 ## `pkgs/`
 
-Direktori `pkgs/` berisi package lokal atau package custom.
+`pkgs/` contains local package definitions.
 
-Struktur saat ini:
-
-```text
-pkgs/
-├── helium-browser/
-└── zennotes/
-```
-
-Perannya:
-
-- Menyimpan derivation Nix custom.
-- Bisa dipakai dari module Home Manager atau NixOS.
-- Cocok untuk package yang belum ada di nixpkgs atau butuh override lokal.
-
-## File Markdown Lain
-
-Repository juga punya beberapa dokumentasi tambahan:
+Current examples:
 
 ```text
-ADDING_PACKAGES.md
-FLAKES_VS_HOME_MANAGER.md
-MACOS.md
-MIGRATING_TO_DENDRITIC.md
-README.md
+pkgs/helium-browser/default.nix
+pkgs/zennotes/default.nix
 ```
 
-Perannya:
+## Naming Conventions
 
-- `README.md` menjelaskan gambaran umum repository.
-- `ADDING_PACKAGES.md` menjelaskan cara menambah package.
-- `FLAKES_VS_HOME_MANAGER.md` menjelaskan perbedaan flakes dan Home Manager.
-- `MACOS.md` berisi catatan macOS.
-- `MIGRATING_TO_DENDRITIC.md` berisi catatan migrasi struktur dendritic.
+Use `hallwack.<scope>.<feature>.enable` for module toggles.
 
-## Alur Evaluasi Konfigurasi
-
-Alur ringkasnya:
+Current scopes include:
 
 ```text
-flake.nix
-└── imports module flake-parts
-    └── hosts/hallnet/default.nix
-        └── flake.nixosConfigurations.hallnet
-            ├── module NixOS dari modules/system/nixos/
-            └── Home Manager sharedModules dari modules/home/
+hallwack.system.*
+hallwack.services.*
+hallwack.desktop.*
+hallwack.cli.*
+hallwack.editors.*
+hallwack.terminal.*
+hallwack.user.*
 ```
 
-Dengan pola ini:
+It is acceptable for NixOS and Home Manager modules to use the same option path, such as `hallwack.desktop.niri.enable`, because they are evaluated in different module systems.
 
-- `flake.nix` bertugas mengumpulkan module.
-- `hosts/hallnet/default.nix` bertugas memilih module dan mengaktifkan fitur untuk mesin `hallnet`.
-- `modules/system/nixos/` bertugas mengatur sistem.
-- `modules/home/` bertugas mengatur user.
-- `config/` menyimpan dotfiles yang dipakai oleh module Home Manager.
-- `pkgs/` menyimpan package custom.
+## Validation
 
-## Konvensi Penamaan
-
-Konvensi yang disarankan:
-
-- Gunakan prefix `desktop-*` untuk module desktop system-level, misalnya `desktop-niri.nix`.
-- Gunakan nama yang konsisten untuk module Home Manager desktop, misalnya `desktop-niri`, `desktop-hyprland`, dan `desktop-gnome` jika masing-masing punya konfigurasi user.
-- Gunakan `common/` untuk module Home Manager yang tidak spesifik Linux desktop.
-- Gunakan `linux/` untuk module Home Manager yang spesifik Linux atau Wayland desktop.
-- Gunakan folder aplikasi jika konfigurasi aplikasi punya banyak file, misalnya `neovim/default.nix`.
-
-## Rebuild
-
-Untuk menerapkan konfigurasi host:
+Check evaluation:
 
 ```sh
-sudo nixos-rebuild switch --flake /home/hallwack/hallnix#hallnet
+nix flake check --no-build
 ```
 
-Jika `nh` sudah aktif:
+Apply the configuration:
 
 ```sh
-nh os switch
+sudo nixos-rebuild switch --flake .#hallnet
 ```

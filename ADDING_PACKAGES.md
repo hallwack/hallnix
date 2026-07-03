@@ -1,242 +1,262 @@
 # Adding Packages And Configuration
 
-This guide explains how to add new packages and configuration to the
-`dendritic/` example layout.
+This guide explains where to add packages and configuration in the current dendritic layout.
 
 ## Rule Of Thumb
 
-Choose the module location by scope:
+Choose the location by scope:
 
-- `modules/system/nixos/`: Linux system concerns
-- `modules/home/common/`: user packages/config that can also make sense on macOS later
-- `modules/home/linux/`: Linux desktop or Wayland-specific user packages/config
+- `modules/nixos/`: machine-wide NixOS configuration.
+- `modules/home-manager/`: user-level Home Manager configuration.
+- `config/`: editable dotfiles linked by Home Manager.
+- `pkgs/`: local package definitions.
+- `flake.nix`: upstream flake inputs and top-level flake composition.
 
-Choose the module shape by ownership:
+Choose the module by ownership:
 
-- one app owns its own package and config
-- one language/runtime owns its own toolchain packages
-- one system concern owns its related Linux services/options
+- one app owns its package and config
+- one language/runtime owns its toolchain packages
+- one system feature owns its related services and OS options
 
-## Where Things Go
+## System Packages And Services
 
-### 1. System packages and services
-
-Put them in `modules/system/nixos/`.
+Put Linux system concerns in `modules/nixos/`.
 
 Examples:
 
-- networking
-- bluetooth
-- audio
 - boot loader
+- networking
+- audio
+- Bluetooth
 - display manager
-- window manager enablement
+- desktop environment or compositor enablement
+- system services
+- system-wide packages required by the OS
 
-Example files:
-
-- [base.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/base.nix:1)
-- [bluetooth.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/bluetooth.nix:1)
-- [desktop-hyprland.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/desktop-hyprland.nix:1)
-
-### 2. Cross-platform user apps
-
-Put them in `modules/home/common/`.
-
-Examples:
-
-- `ghostty`
-- `kitty`
-- `neovim`
-- `git`
-- `shell`
-
-Recommended structure:
+Current examples:
 
 ```text
-modules/home/common/<app>/
-  default.nix
-  config/
-    ...
+modules/nixos/system/core.nix
+modules/nixos/system/audio.nix
+modules/nixos/system/bluetooth.nix
+modules/nixos/system/fonts.nix
+modules/nixos/system/pcsc.nix
+modules/nixos/system/shell.nix
+modules/nixos/system/users.nix
+modules/nixos/services/openssh.nix
+modules/nixos/desktop/gnome.nix
+modules/nixos/desktop/niri.nix
 ```
-
-Examples:
-
-- [ghostty](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/ghostty/default.nix:1)
-- [kitty](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/kitty/default.nix:1)
-- [neovim](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/neovim/default.nix:1)
-
-### 3. Linux-only desktop apps and config
-
-Put them in `modules/home/linux/`.
-
-Examples:
-
-- Hyprland config
-- Niri config
-- waybar
-- rofi
-- mako
-- swaync
-
-Example:
-
-- [desktop-hyprland.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/linux/desktop-hyprland.nix:1)
-
-### 4. Language toolchains
-
-Put them in dedicated Home Manager modules under `modules/home/common/`.
-
-Examples:
-
-- [nodejs.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/nodejs.nix:1)
-- [rust.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/rust.nix:1)
-- [bun.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/common/bun.nix:1)
-
-This keeps runtime-specific tools out of the generic user package list.
-
-## How To Add A New App
-
-Example: adding `ghostty`.
-
-Create:
-
-```text
-modules/home/common/ghostty/
-  default.nix
-  config/
-    config
-```
-
-`default.nix`:
-
-```nix
-{
-  ...
-}: {
-  flake.modules.homeManager.ghostty = { pkgs, ... }: {
-    home.packages = with pkgs; [
-      ghostty
-    ];
-
-    xdg.configFile."ghostty".source = ./config;
-  };
-}
-```
-
-Then add it to:
-
-- `dendritic/flake.nix` imports
-- `home-manager.sharedModules` in `dendritic/hosts/hallnet/default.nix`
-
-## How To Add A New CLI Tool
-
-If it belongs to an existing concern, add it there.
-
-Examples:
-
-- add `git` to `git.nix`
-- add `cargo-*` tools to `rust.nix`
-- add `pnpm` or `typescript-language-server` to `nodejs.nix`
-
-If it is general developer tooling, either:
-
-- place it in an existing related module
-- or create a new module such as `dev-base.nix`
-
-## How To Add A New Window Manager
-
-Split it in two:
-
-- system enablement in `modules/system/nixos/desktop-<name>.nix`
-- user config in `modules/home/linux/desktop-<name>.nix`
-
-Example split:
-
-```text
-modules/system/nixos/desktop-niri.nix
-modules/home/linux/desktop-niri.nix
-```
-
-Current repo example:
-
-- [modules/system/nixos/desktop-niri.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/system/nixos/desktop-niri.nix:1)
-- [modules/home/linux/niri/default.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/linux/niri/default.nix:1)
-- [modules/home/linux/noctalia/default.nix](/home/hallwack/Documents/dev/nix/hallnix/dendritic/modules/home/linux/noctalia/default.nix:1)
-
-System module owns:
-
-- `programs.<wm>.enable`
-- portals
-- system packages
-- session integration
-
-Home module owns:
-
-- `xdg.configFile`
-- launcher config
-- panel config
-- wallpapers/scripts if they are user-session concerns
-
-## How To Add A New Language Runtime
-
-Create one module per runtime.
-
-Examples:
-
-- `modules/home/common/nodejs.nix`
-- `modules/home/common/rust.nix`
-- `modules/home/common/bun.nix`
 
 Minimal pattern:
 
 ```nix
+{ config, lib, pkgs, ... }:
+
 {
-  ...
-}: {
-  flake.modules.homeManager.nodejs = { pkgs, ... }: {
-    home.packages = with pkgs; [
-      nodejs
-      nodePackages.pnpm
+  options.hallwack.system.example.enable =
+    lib.mkEnableOption "Enable example system feature";
+
+  config = lib.mkIf config.hallwack.system.example.enable {
+    environment.systemPackages = with pkgs; [
+      example
     ];
   };
 }
 ```
 
-Then import it in `flake.nix` and add it to `sharedModules`.
+Then enable it in `hosts/hallnet/configuration.nix`:
 
-## Package Placement Rules
+```nix
+hallwack.system.example.enable = true;
+```
 
-Use these rules when unsure:
+## User Packages And Dotfiles
 
-- if the OS must know about it, use `modules/system/nixos/`
-- if it is a user app that may work on macOS later, use `modules/home/common/`
-- if it depends on Linux desktop infrastructure, use `modules/home/linux/`
-- if the package exists only to support one app, keep it with that app
-- if the package exists for one language ecosystem, keep it with that language
+Put user-level concerns in `modules/home-manager/`.
 
-## Current Examples In This Repo
+Examples:
 
-App-owned modules:
+- Git config
+- Zsh config
+- Neovim config
+- terminal config
+- user packages
+- files under `~/.config`
+- user-session desktop config
 
-- Ghostty: package + config directory
-- Kitty: package + config directory
-- Neovim: package + config directory
+Current examples:
 
-Language-owned modules:
+```text
+modules/home-manager/user/hallwack.nix
+modules/home-manager/cli/git.nix
+modules/home-manager/cli/shell.nix
+modules/home-manager/cli/nodejs.nix
+modules/home-manager/cli/rust.nix
+modules/home-manager/cli/dev-tools.nix
+modules/home-manager/editors/neovim.nix
+modules/home-manager/terminal/ghostty.nix
+modules/home-manager/terminal/kitty.nix
+modules/home-manager/desktop/niri.nix
+modules/home-manager/desktop/noctalia.nix
+```
 
-- Node.js: runtime and JS tooling
-- Rust: toolchain and cargo helpers
-- Bun: runtime
+Minimal pattern:
 
-System-owned modules:
+```nix
+{ config, lib, pkgs, ... }:
 
-- Bluetooth
-- Audio
-- Fonts
-- Hyprland enablement
+{
+  options.hallwack.cli.example.enable =
+    lib.mkEnableOption "Enable example user tool";
 
-## Suggested Future Cleanup
+  config = lib.mkIf config.hallwack.cli.example.enable {
+    home.packages = with pkgs; [
+      example
+    ];
+  };
+}
+```
 
-- move `git` package ownership fully into `git.nix`
-- decide whether `gcc` belongs in `rust.nix` or a shared `dev-base.nix`
-- move `waybar`, `rofi`, and `mako` to app-owned modules under `modules/home/linux/`
+Then enable it in `hosts/hallnet/home.nix`:
+
+```nix
+hallwack.cli.example.enable = true;
+```
+
+## Adding A New CLI Tool
+
+If it belongs to an existing concern, add it there:
+
+- Git-related tools: `modules/home-manager/cli/git.nix`
+- Rust tools: `modules/home-manager/cli/rust.nix`
+- Node.js tools: `modules/home-manager/cli/nodejs.nix`
+- general CLI tools: `modules/home-manager/cli/dev-tools.nix`
+- editor support tools: `modules/home-manager/editors/neovim.nix`
+
+If it deserves its own toggle, create a new module under `modules/home-manager/cli/`.
+
+## Adding A New App
+
+Create an app-owned Home Manager module.
+
+Example:
+
+```text
+modules/home-manager/terminal/alacritty.nix
+```
+
+```nix
+{ config, lib, pkgs, repoRoot, ... }:
+
+{
+  options.hallwack.terminal.alacritty.enable =
+    lib.mkEnableOption "Alacritty terminal";
+
+  config = lib.mkIf config.hallwack.terminal.alacritty.enable {
+    home.packages = with pkgs; [
+      alacritty
+    ];
+
+    xdg.configFile."alacritty".source = lib.mkForce (
+      config.lib.file.mkOutOfStoreSymlink "${repoRoot}/config/alacritty"
+    );
+  };
+}
+```
+
+Because `modules/home-manager/default.nix` auto-imports modules recursively, you do not need to manually add this file to `flake.nix`.
+
+## Adding A New Language Runtime
+
+Create one module per runtime under `modules/home-manager/cli/`.
+
+Examples:
+
+```text
+modules/home-manager/cli/nodejs.nix
+modules/home-manager/cli/rust.nix
+```
+
+This keeps language-specific packages out of the generic user package list.
+
+## Adding A New Window Manager Or Desktop
+
+Split it into two layers when it has both system and user concerns:
+
+```text
+modules/nixos/desktop/<name>.nix
+modules/home-manager/desktop/<name>.nix
+```
+
+The NixOS module owns:
+
+- `programs.<wm>.enable`
+- display manager/session integration
+- portals
+- polkit/keyring if needed
+- system packages needed by the compositor/session
+
+The Home Manager module owns:
+
+- `xdg.configFile`
+- user config files
+- panel/shell config
+- user-session scripts
+
+Enable the system layer in:
+
+```text
+hosts/hallnet/configuration.nix
+```
+
+Enable the user layer in:
+
+```text
+hosts/hallnet/home.nix
+```
+
+## Local Packages
+
+Use `pkgs/` for local package definitions:
+
+```text
+pkgs/helium-browser/default.nix
+pkgs/zennotes/default.nix
+```
+
+Use `home.packages` when the package is for the user environment.
+
+Use `environment.systemPackages` when the package must be available system-wide or supports an OS-level feature.
+
+## Auto-Import Rules
+
+Both module roots are auto-imported:
+
+```text
+modules/nixos/default.nix
+modules/home-manager/default.nix
+```
+
+Do not place non-module helper files directly under those trees unless they are excluded. Current auto-import excludes:
+
+- `default.nix`
+- paths containing `/_`
+
+If you need helper files, prefer:
+
+```text
+modules/home-manager/_lib/
+modules/nixos/_lib/
+```
+
+## Current Gaps To Keep In Mind
+
+Compared with the older `dendritic` branch, this branch does not currently include separate Home Manager modules for every previous tool. If you still need them, add modules such as:
+
+```text
+modules/home-manager/cli/bun.nix
+modules/home-manager/cli/nix.nix
+```
+
+Hyprland also has a Home Manager placeholder, but the NixOS Hyprland system module has not been recreated in this branch.
