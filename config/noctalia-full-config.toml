@@ -359,7 +359,7 @@ widget_order = [
         show_forecast = false
 
 [nightlight]
-enabled = true
+enabled = false
 force = true
 temperature_day = 5000
 temperature_night = 4900
