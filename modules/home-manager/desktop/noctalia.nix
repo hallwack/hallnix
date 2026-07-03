@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   repoRoot,
   inputs,
   ...
@@ -12,7 +13,7 @@
 
   config = lib.mkIf config.hallwack.desktop.noctalia.enable {
 
-    home.packages = with config.pkgs; [
+    home.packages = with pkgs; [
       inputs.noctalia.packages.${pkgs.system}.default
     ];
 
