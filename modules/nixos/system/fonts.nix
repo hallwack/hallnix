@@ -11,7 +11,7 @@
 
   config = lib.mkIf config.hallwack.system.fonts.enable {
 
-    fonts.fontconfig.packages = with pkgs; [
+    fonts.packages = with pkgs; [
       nerd-fonts.geist-mono
       nerd-fonts.iosevka-term
       nerd-fonts.iosevka
