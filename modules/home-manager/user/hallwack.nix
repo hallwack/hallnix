@@ -32,7 +32,7 @@
         obsidian
         ferdium
 
-        inputs.hallnix.packages.${pkgs.stdenv.hostPlatform.system}.helium-browser
+        inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default
         inputs.zennotes.packages.${pkgs.stdenv.hostPlatform.system}.zennotes-desktop
       ];
     };

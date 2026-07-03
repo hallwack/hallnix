@@ -27,6 +27,11 @@
     apple-fonts.url = "github:Lyndeno/apple-fonts.nix";
 
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
+
+    helium = {
+      url = "github:schembriaiden/helium-browser-nix-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
