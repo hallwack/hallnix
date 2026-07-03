@@ -1,210 +1,141 @@
 # hallnix
 
-Konfigurasi NixOS pribadi berbasis `flake-parts`, NixOS modules, dan Home Manager.
+Personal NixOS configuration built with `flake-parts`, NixOS modules, and Home Manager.
 
-Repository ini memakai pola dendritic: setiap fitur dipisah sebagai module kecil, lalu host memilih module dan feature flag yang ingin diaktifkan.
+This branch uses a dendritic layout: small feature modules are auto-imported, while each host decides which features are enabled.
 
-## Struktur Utama
+## Layout
 
 ```text
 .
 ├── flake.nix
 ├── hosts/
 │   └── hallnet/
+│       ├── default.nix
+│       ├── configuration.nix
+│       ├── home.nix
+│       └── hardware-configuration.nix
 ├── modules/
-│   ├── system/nixos/
-│   └── home/
+│   ├── nixos/
+│   └── home-manager/
 ├── config/
 └── pkgs/
 ```
 
-## Entry Point
+## Entry Points
 
-- `flake.nix` adalah entrypoint utama flake.
-- `hosts/hallnet/default.nix` mendefinisikan `nixosConfigurations.hallnet`.
-- `hosts/hallnet/hardware-configuration.nix` berisi konfigurasi hardware hasil generate NixOS.
+- `flake.nix` is the top-level flake entry point.
+- `hosts/hallnet/default.nix` defines `flake.nixosConfigurations.hallnet`.
+- `hosts/hallnet/configuration.nix` enables NixOS/system feature flags for `hallnet`.
+- `hosts/hallnet/home.nix` enables Home Manager/user feature flags for `hallwack`.
+- `hosts/hallnet/hardware-configuration.nix` is the generated NixOS hardware file.
 
-## Module System
+## NixOS Modules
 
-Module NixOS berada di:
-
-```text
-modules/system/nixos/
-```
-
-Module ini mengatur konfigurasi system-level seperti boot, networking, service, desktop, audio, bluetooth, font, user system, shell, dan Nix helper.
-
-Contoh module system:
-
-- `base.nix`
-- `desktop-gnome.nix`
-- `desktop-hyprland.nix`
-- `desktop-niri.nix`
-- `audio.nix`
-- `bluetooth.nix`
-- `fonts.nix`
-- `pcsc.nix`
-- `shell.nix`
-- `user-hallwack.nix`
-
-Semua module system diekspor sebagai:
-
-```nix
-config.flake.modules.nixos.<nama>
-```
-
-## Module Home Manager
-
-Module Home Manager berada di:
+NixOS modules live in:
 
 ```text
-modules/home/
-├── common/
-└── linux/
+modules/nixos/
+├── default.nix
+├── desktop/
+├── services/
+└── system/
 ```
 
-`modules/home/common/` berisi konfigurasi user yang umum, seperti shell, Git, Neovim, terminal, dan language tooling.
+`modules/nixos/default.nix` recursively imports all `.nix` files under `modules/nixos`, except `default.nix` and paths containing `/_`.
 
-`modules/home/linux/` berisi konfigurasi user yang spesifik Linux desktop atau Wayland.
-
-Semua module Home Manager diekspor sebagai:
+These modules define options such as:
 
 ```nix
-config.flake.modules.homeManager.<nama>
+hallwack.system.core.enable
+hallwack.system.audio.enable
+hallwack.system.bluetooth.enable
+hallwack.system.fonts.enable
+hallwack.system.pcsc.enable
+hallwack.system.shell.enable
+hallwack.system.users.enable
+hallwack.services.openssh.enable
+hallwack.desktop.gnome.enable
+hallwack.desktop.niri.enable
 ```
 
-## Desktop Modules
+Enable them from `hosts/hallnet/configuration.nix`.
 
-Desktop sekarang dipisahkan menjadi dua layer:
+## Home Manager Modules
 
-- NixOS/system layer berada di `modules/system/nixos/desktop-*.nix`.
-- Home Manager/user layer berada di `modules/home/linux/` jika desktop tersebut punya konfigurasi user.
+Home Manager modules live in:
 
-### GNOME
+```text
+modules/home-manager/
+├── default.nix
+├── cli/
+├── desktop/
+├── editors/
+├── terminal/
+└── user/
+```
 
-System module:
+`modules/home-manager/default.nix` recursively imports all `.nix` files under `modules/home-manager`, except `default.nix` and paths containing `/_`.
+
+These modules define options such as:
 
 ```nix
-config.flake.modules.nixos.desktop-gnome
+hallwack.user.enable
+hallwack.cli.devtools.enable
+hallwack.cli.git.enable
+hallwack.cli.nodejs.enable
+hallwack.cli.rust.enable
+hallwack.cli.shell.enable
+hallwack.desktop.niri.enable
+hallwack.desktop.noctalia.enable
+hallwack.editors.neovim.enable
+hallwack.terminal.ghostty.enable
+hallwack.terminal.kitty.enable
 ```
 
-Feature flag:
+Enable them from `hosts/hallnet/home.nix`.
 
-```nix
-desktop-gnome.enable = true;
+## Desktop Layers
+
+Desktop configuration is split into system and user layers.
+
+Niri system enablement is in:
+
+```text
+modules/nixos/desktop/niri.nix
 ```
 
-GNOME saat ini hanya punya konfigurasi system-level. Tidak ada module Home Manager khusus GNOME.
+Niri user config is in:
 
-### Niri
-
-System module:
-
-```nix
-config.flake.modules.nixos.desktop-niri
+```text
+modules/home-manager/desktop/niri.nix
 ```
 
-Home Manager modules:
+Both currently use the same option name, `hallwack.desktop.niri.enable`, but they live in different module systems:
 
-```nix
-config.flake.modules.homeManager.niri
-config.flake.modules.homeManager.noctalia
-```
+- NixOS sees `hallwack.desktop.niri.enable`.
+- Home Manager sees `home-manager.users.hallwack.hallwack.desktop.niri.enable`.
 
-Feature flag:
-
-```nix
-desktop-niri.enable = true;
-```
-
-Saat `desktop-niri.enable = true;`, module system Niri juga meneruskan enable ke Home Manager user:
-
-```nix
-home-manager.users.hallwack.desktop-niri.enable = true;
-```
-
-Efeknya:
-
-- Niri system enablement aktif.
-- XDG portal untuk Niri aktif.
-- Config user Niri dari `config/niri` terhubung.
-- Noctalia shell ikut aktif.
-
-### Hyprland
-
-System module:
-
-```nix
-config.flake.modules.nixos.desktop-hyprland
-```
-
-Home Manager module:
-
-```nix
-config.flake.modules.homeManager.desktop-hyprland
-```
-
-Feature flag:
-
-```nix
-desktop-hyprland.enable = true;
-```
-
-Saat `desktop-hyprland.enable = true;`, module system Hyprland juga meneruskan enable ke Home Manager user:
-
-```nix
-home-manager.users.hallwack.desktop-hyprland.enable = true;
-```
-
-## Mengaktifkan Desktop
-
-Desktop diaktifkan dari `hosts/hallnet/default.nix`.
-
-Contoh:
-
-```nix
-{
-  desktop-gnome.enable = true;
-  desktop-niri.enable = true;
-  # desktop-hyprland.enable = true;
-}
-```
-
-Module desktop tetap perlu di-import di list `modules`:
-
-```nix
-config.flake.modules.nixos.desktop-gnome
-config.flake.modules.nixos.desktop-hyprland
-config.flake.modules.nixos.desktop-niri
-```
-
-Module Home Manager desktop yang punya konfigurasi user tetap perlu masuk ke `home-manager.sharedModules`:
-
-```nix
-config.flake.modules.homeManager.desktop-hyprland
-config.flake.modules.homeManager.niri
-config.flake.modules.homeManager.noctalia
-```
+That is valid. Enable the system layer in `configuration.nix` and the user layer in `home.nix`.
 
 ## Dotfiles
 
-Direktori `config/` menyimpan konfigurasi aplikasi mentah yang disymlink oleh Home Manager.
+The `config/` directory stores editable application configuration that Home Manager links into the user environment.
 
-Contoh:
+Examples:
 
 - `config/niri`
-- `config/hypr`
 - `config/nvim`
 - `config/ghostty`
 - `config/kitty`
 - `config/zsh`
 - `config/starship.toml`
 
-Dotfiles ini tidak aktif sendiri. Module Home Manager yang menghubungkannya ke `$HOME/.config`.
+Dotfiles are not active by themselves. A Home Manager module must link or configure them.
 
-## Package Lokal
+## Local Packages
 
-Package custom berada di:
+Local package definitions live in:
 
 ```text
 pkgs/
@@ -212,26 +143,28 @@ pkgs/
 └── zennotes/
 ```
 
-Package ini bisa dipakai dari module NixOS atau Home Manager.
+They can be referenced from NixOS or Home Manager modules through flake inputs or `pkgs` depending on how they are exposed.
 
 ## Rebuild
 
-Dengan `nixos-rebuild`:
+From this repository:
 
 ```sh
-sudo nixos-rebuild switch --flake /home/hallwack/hallnix#hallnet
+sudo nixos-rebuild switch --flake .#hallnet
 ```
 
-Dengan `nh`:
+The `hallwack.cli.shell` module also defines a `switch` shell alias using the configured repository path.
+
+## Check
 
 ```sh
-nh os switch
+nix flake check --no-build
 ```
 
-## Dokumentasi Tambahan
+## More Documentation
 
-- `STRUCTURE.md` menjelaskan struktur repository secara lebih detail.
-- `ADDING_PACKAGES.md` menjelaskan cara menambah package.
-- `FLAKES_VS_HOME_MANAGER.md` menjelaskan perbedaan flakes dan Home Manager.
-- `MIGRATING_TO_DENDRITIC.md` berisi catatan migrasi struktur dendritic.
-- `MACOS.md` berisi catatan macOS.
+- `STRUCTURE.md`: repository structure and module conventions.
+- `ADDING_PACKAGES.md`: where to add packages and new feature modules.
+- `FLAKES_VS_HOME_MANAGER.md`: how flakes, NixOS, and Home Manager fit together.
+- `MIGRATING_TO_DENDRITIC.md`: migration notes for this module layout.
+- `MACOS.md`: planned nix-darwin/macOS extension strategy.

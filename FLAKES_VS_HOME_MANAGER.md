@@ -1,25 +1,24 @@
-# Flakes Vs Home Manager In This Configuration
+# Flakes Vs Home Manager In This Repository
 
-This guide explains the difference between:
-
-- `flakes`
-- `Home Manager`
-
-and how they work together in this repository.
-
-This repo uses both, but they solve different problems.
+This guide explains the difference between flakes, NixOS modules, and Home Manager modules in the current layout.
 
 ## Short Version
 
-- **Flakes** define and compose the whole project
-- **Home Manager** manages your user environment
+- **Flakes** define the project, inputs, and outputs.
+- **NixOS modules** configure the machine.
+- **Home Manager modules** configure the user environment.
 
 In this repo:
 
-- `flake.nix` is the top-level entrypoint
-- `hosts/hallnet/default.nix` assembles the NixOS system
-- `modules/system/nixos/*` configure the machine
-- `modules/home/*` configure your user environment
+```text
+flake.nix                         -> project entry point
+hosts/hallnet/default.nix         -> creates nixosConfigurations.hallnet
+hosts/hallnet/configuration.nix   -> enables NixOS feature modules
+hosts/hallnet/home.nix            -> enables Home Manager feature modules
+modules/nixos/                    -> NixOS modules
+modules/home-manager/             -> Home Manager modules
+config/                           -> dotfiles linked by Home Manager
+```
 
 ## What Flakes Do
 
@@ -27,35 +26,83 @@ Flakes are the project-level structure.
 
 They answer questions like:
 
-- which inputs does this config use?
-- which version of `nixpkgs` does it follow?
-- which outputs does this repo provide?
-- how do we build `nixosConfigurations.hallnet`?
+- which inputs does this repository use?
+- which `nixpkgs` revision is pinned?
+- which systems does the flake support?
+- which outputs does this repository expose?
+- how is `nixosConfigurations.hallnet` created?
 
-In this repo, that starts in:
+This starts in:
 
-- [flake.nix](/home/hallwack/Documents/dev/nix/hallnix/flake.nix:1)
+```text
+flake.nix
+```
 
-### In your `flake.nix`
+This repository uses `flake-parts`, so `flake.nix` stays small and imports the host entry point:
 
-Your flake defines:
+```nix
+imports = [
+  ./hosts/hallnet
+];
+```
 
-- `inputs`
-  - `nixpkgs`
-  - `home-manager`
-  - `flake-parts`
-  - `nur`
-  - `noctalia`
-  - others
-- `outputs`
-- imported modules
-- `perSystem` packages and formatter
+The host entry point then defines:
 
-So flakes are the **container and composition layer**.
+```nix
+flake.nixosConfigurations.hallnet
+```
 
-They do not directly mean "desktop config" or "shell config".
+## What NixOS Modules Do
 
-They define the graph of the whole configuration.
+NixOS modules configure the operating system and machine-wide behavior.
+
+They answer questions like:
+
+- how does the system boot?
+- which services are enabled?
+- which users exist?
+- which desktop/session support is installed?
+- which packages are available system-wide?
+- how are audio, Bluetooth, fonts, and PCSC configured?
+
+In this repo, NixOS modules live in:
+
+```text
+modules/nixos/
+```
+
+Examples:
+
+```text
+modules/nixos/system/core.nix
+modules/nixos/system/audio.nix
+modules/nixos/system/bluetooth.nix
+modules/nixos/system/fonts.nix
+modules/nixos/system/users.nix
+modules/nixos/services/openssh.nix
+modules/nixos/desktop/gnome.nix
+modules/nixos/desktop/niri.nix
+```
+
+They are auto-imported through:
+
+```text
+modules/nixos/default.nix
+```
+
+The host enables them in:
+
+```text
+hosts/hallnet/configuration.nix
+```
+
+Example:
+
+```nix
+hallwack.system.audio.enable = true;
+hallwack.services.openssh.enable = true;
+hallwack.desktop.niri.enable = true;
+```
 
 ## What Home Manager Does
 
@@ -63,291 +110,142 @@ Home Manager manages the user environment.
 
 It answers questions like:
 
-- what packages should the user have?
-- what should go into `~/.config/nvim`?
-- how should `zsh` be configured?
-- what should `starship` look like?
-- what should `ghostty`, `kitty`, or `niri` place in `~/.config`?
+- which packages should the user have?
+- what should be linked into `~/.config`?
+- how should Git, Zsh, Neovim, Ghostty, Kitty, or Niri be configured?
+- which user-level session files should be installed?
 
 In this repo, Home Manager modules live in:
 
-- [modules/home/common](/home/hallwack/Documents/dev/nix/hallnix/modules/home/common)
-- [modules/home/linux](/home/hallwack/Documents/dev/nix/hallnix/modules/home/linux)
-
-Examples:
-
-- [modules/home/common/shell.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/home/common/shell.nix:1)
-- [modules/home/common/neovim/default.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/home/common/neovim/default.nix:1)
-- [modules/home/common/git.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/home/common/git.nix:1)
-- [modules/home/linux/niri/default.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/home/linux/niri/default.nix:1)
-
-So Home Manager is the **user-level configuration layer**.
-
-## What NixOS Does
-
-NixOS is the operating system configuration layer.
-
-It answers questions like:
-
-- boot loader
-- networking
-- audio
-- Bluetooth
-- installed system packages
-- login manager
-- window manager enablement
-
-In this repo, NixOS modules live in:
-
-- [modules/system/nixos](/home/hallwack/Documents/dev/nix/hallnix/modules/system/nixos)
-
-Examples:
-
-- [modules/system/nixos/base.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/system/nixos/base.nix:1)
-- [modules/system/nixos/audio.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/system/nixos/audio.nix:1)
-- [modules/system/nixos/desktop-niri.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/system/nixos/desktop-niri.nix:1)
-
-## How They Fit Together Here
-
-The flow in this repo is:
-
-1. `flake.nix` declares inputs and imports module files
-2. `hosts/hallnet/default.nix` builds `nixosConfigurations.hallnet`
-3. that host imports NixOS modules for system config
-4. it also imports Home Manager as a NixOS module
-5. Home Manager then applies the user modules for `hallwack`
-
-The main assembly file is:
-
-- [hosts/hallnet/default.nix](/home/hallwack/Documents/dev/nix/hallnix/hosts/hallnet/default.nix:1)
-
-## The Actual Wiring In This Repo
-
-Your host file contains:
-
-- `inputs.home-manager.nixosModules.home-manager`
-- `home-manager.sharedModules = [ ... ]`
-- `home-manager.users.hallwack = {}`
-
-That means:
-
-- Home Manager is being run **through NixOS**
-- your user config is part of the same `nixos-rebuild switch`
-
-So you do **not** run separate Home Manager commands in this setup.
-
-Instead, you usually apply both system and home config with:
-
-```bash
-sudo nixos-rebuild switch --flake .#hallnet
+```text
+modules/home-manager/
 ```
 
-## Difference In Responsibility
-
-Use this rule:
-
-- if the machine itself must know about it: NixOS module
-- if the user environment must know about it: Home Manager module
-- if the whole project must know how to assemble it: flake
-
-### Examples
-
-#### Example 1: enable Niri
-
-This is a system concern.
-
-Use:
-
-- [modules/system/nixos/desktop-niri.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/system/nixos/desktop-niri.nix:1)
-
-because the OS needs to start the compositor and session support.
-
-#### Example 2: configure Niri files
-
-This is a user concern.
-
-Use:
-
-- [modules/home/linux/niri/default.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/home/linux/niri/default.nix:1)
-- [config/niri/config.kdl](/home/hallwack/Documents/dev/nix/hallnix/config/niri/config.kdl:1)
-
-because this populates `~/.config/niri`.
-
-#### Example 3: configure Zsh
-
-This is a user concern.
-
-Use:
-
-- [modules/home/common/shell.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/home/common/shell.nix:1)
-- [config/zsh/custom.zsh](/home/hallwack/Documents/dev/nix/hallnix/config/zsh/custom.zsh:1)
-
-because Zsh is your shell environment, not a system service.
-
-#### Example 4: add a new flake input
-
-This is a project concern.
-
-Use:
-
-- [flake.nix](/home/hallwack/Documents/dev/nix/hallnix/flake.nix:1)
-
-because only the flake can define new upstream dependencies.
-
-## What `flake-parts` Changes
-
-This repo uses `flake-parts`.
-
-That means your `flake.nix` does not manually define everything in one file.
-
-Instead:
-
-- module files export `flake.modules.nixos.*`
-- module files export `flake.modules.homeManager.*`
-- the host assembles them
-
-So in this repo:
-
-- flakes are still the top-level structure
-- `flake-parts` just makes the flake modular
-
-## Why You Need Both
-
-You need flakes because:
-
-- you want a reproducible project with pinned inputs
-- you want one command to build the whole configuration
-- you want reusable outputs and module composition
-
-You need Home Manager because:
-
-- you want declarative `~/.config`
-- you want declarative shell/editor/app setup
-- you want user packages separated from system packages
-
-Without flakes:
-
-- you lose the modern project structure and pinned inputs
-
-Without Home Manager:
-
-- you can still configure NixOS, but user dotfiles and app config become awkward
-
-## How To Implement Things In This Repo
-
-### Add a system feature
-
-Use:
-
-- `modules/system/nixos/<feature>.nix`
-
-Then wire it in through:
-
-- [hosts/hallnet/default.nix](/home/hallwack/Documents/dev/nix/hallnix/hosts/hallnet/default.nix:1)
-
 Examples:
 
-- audio
-- Bluetooth
-- fonts
-- Niri enablement
+```text
+modules/home-manager/user/hallwack.nix
+modules/home-manager/cli/git.nix
+modules/home-manager/cli/shell.nix
+modules/home-manager/cli/nodejs.nix
+modules/home-manager/cli/rust.nix
+modules/home-manager/editors/neovim.nix
+modules/home-manager/terminal/ghostty.nix
+modules/home-manager/terminal/kitty.nix
+modules/home-manager/desktop/niri.nix
+modules/home-manager/desktop/noctalia.nix
+```
 
-### Add a user feature
+They are auto-imported through:
 
-Use:
+```text
+modules/home-manager/default.nix
+```
 
-- `modules/home/common/<feature>.nix`
-- or `modules/home/common/<app>/default.nix`
-- or `modules/home/linux/<feature>.nix`
+The host enables them in:
 
-Then add it to:
-
-- `home-manager.sharedModules`
-
-Examples:
-
-- Neovim
-- Git
-- Starship
-- Zsh
-- Niri config
-- Noctalia
-
-### Add a new upstream dependency
-
-Use:
-
-- `flake.nix`
-
-Examples:
-
-- `noctalia`
-- `nur`
-- `apple-fonts`
-
-## How To Think About `config/`
-
-In this repo, the intended pattern is:
-
-- source of truth lives in `~/hallnix/config/...`
-- Home Manager links it into `~/.config/...`
-
-Examples:
-
-- [config/nvim/init.lua](/home/hallwack/Documents/dev/nix/hallnix/config/nvim/init.lua:1)
-- [config/starship.toml](/home/hallwack/Documents/dev/nix/hallnix/config/starship.toml:1)
-- [config/zsh/custom.zsh](/home/hallwack/Documents/dev/nix/hallnix/config/zsh/custom.zsh:1)
-- [config/niri/config.kdl](/home/hallwack/Documents/dev/nix/hallnix/config/niri/config.kdl:1)
-
-So:
-
-- flakes assemble
-- Home Manager populates user config
-- `config/` stores the editable source files
-
-## Common Confusion
-
-### “Is Home Manager separate from flakes?”
-
-Yes conceptually, but in this repo it is integrated into the flake.
-
-So:
-
-- Home Manager is a tool/module system
-- the flake is how you include and assemble it
-
-### “Do I edit Home Manager or the config files?”
-
-Usually both:
-
-- edit the Home Manager module when changing ownership, packages, or links
-- edit files under `config/` when changing app behavior
+```text
+hosts/hallnet/home.nix
+```
 
 Example:
 
-- change package list for Neovim support in [modules/home/common/neovim/default.nix](/home/hallwack/Documents/dev/nix/hallnix/modules/home/common/neovim/default.nix:1)
-- change Neovim behavior in [config/nvim/init.lua](/home/hallwack/Documents/dev/nix/hallnix/config/nvim/init.lua:1)
+```nix
+hallwack.cli.git.enable = true;
+hallwack.cli.shell.enable = true;
+hallwack.editors.neovim.enable = true;
+hallwack.terminal.kitty.enable = true;
+```
 
-### “Do I run `home-manager switch`?”
+## How They Fit Together
 
-Not in this repo’s normal flow.
+The evaluation flow is:
 
-Because Home Manager is integrated into the NixOS flake, you usually run:
+1. `flake.nix` imports `./hosts/hallnet`.
+2. `hosts/hallnet/default.nix` creates `flake.nixosConfigurations.hallnet`.
+3. That NixOS system imports `hosts/hallnet/configuration.nix`.
+4. It also imports `modules/nixos`, which auto-imports all NixOS feature modules.
+5. It enables Home Manager through `inputs.home-manager.nixosModules.home-manager`.
+6. Home Manager receives `modules/home-manager` through `home-manager.sharedModules`.
+7. `hosts/hallnet/home.nix` enables the user-level feature modules.
 
-```bash
+Home Manager is integrated into the NixOS rebuild, so the normal command is:
+
+```sh
 sudo nixos-rebuild switch --flake .#hallnet
 ```
 
-## Practical Summary
+You do not normally run `home-manager switch` separately in this setup.
 
-- `flake.nix`: project entrypoint and dependency graph
-- `hosts/hallnet/default.nix`: machine assembly
-- `modules/system/nixos/*`: machine/system configuration
-- `modules/home/*`: user configuration through Home Manager
-- `config/*`: editable source files that Home Manager links into `~/.config`
+## Responsibility Boundary
 
-## Related Docs
+Use this rule:
 
-- package placement: [ADDING_PACKAGES.md](/home/hallwack/Documents/dev/nix/hallnix/ADDING_PACKAGES.md:1)
-- migration guide: [MIGRATING_TO_DENDRITIC.md](/home/hallwack/Documents/dev/nix/hallnix/MIGRATING_TO_DENDRITIC.md:1)
-- macOS guide: [MACOS.md](/home/hallwack/Documents/dev/nix/hallnix/MACOS.md:1)
+- if the machine itself needs it, use a NixOS module
+- if the user environment needs it, use a Home Manager module
+- if the whole project needs to know about it, use the flake
+
+Examples:
+
+```text
+services.openssh.enable      -> NixOS
+programs.niri.enable         -> NixOS
+programs.git.enable          -> Home Manager
+xdg.configFile."nvim"        -> Home Manager
+inputs.noctalia              -> flake.nix
+```
+
+## Same Option Names In NixOS And Home Manager
+
+It is valid for a NixOS module and a Home Manager module to use the same option path, for example:
+
+```nix
+hallwack.desktop.niri.enable
+```
+
+They are evaluated in different module systems:
+
+- NixOS sees `hallwack.desktop.niri.enable`.
+- Home Manager sees `home-manager.users.hallwack.hallwack.desktop.niri.enable`.
+
+This is useful when a feature has both a system layer and a user layer. You still need to enable each layer in the correct host file:
+
+```nix
+# hosts/hallnet/configuration.nix
+hallwack.desktop.niri.enable = true;
+
+# hosts/hallnet/home.nix
+hallwack.desktop.niri.enable = true;
+```
+
+## What `flake-parts` Changes
+
+`flake-parts` is used for flake composition, but feature modules are now ordinary NixOS/Home Manager modules rather than `flake.modules.*` outputs.
+
+Current pattern:
+
+```text
+flake.nix imports hosts/hallnet
+hosts/hallnet/default.nix imports modules/nixos
+home-manager.sharedModules imports modules/home-manager
+```
+
+This keeps `flake.nix` small and moves host-specific decisions into `hosts/hallnet/`.
+
+## How To Think About `config/`
+
+The intended pattern is:
+
+- source files live under `config/`
+- Home Manager links them into `~/.config`
+
+Examples:
+
+```text
+config/nvim/init.lua
+config/niri/config.kdl
+config/starship.toml
+config/zsh/custom.zsh
+```
+
+Change the Home Manager module when changing package ownership or file links. Change files under `config/` when changing the application behavior itself.
