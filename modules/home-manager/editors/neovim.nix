@@ -10,28 +10,40 @@
   options.hallwack.editors.neovim.enable = lib.mkEnableOption "Neovim terminal";
 
   config = lib.mkIf config.hallwack.editors.neovim.enable {
-    home.packages = with pkgs; [
-      neovim
+    programs.neovim = {
+      enable = true;
+      defaultEditor = true;
+      sideloadInitLua = true;
 
-      # Treesitter Build tools
-      tree-sitter
-      gcc
-      gnumake
+      # Download treesitter languages
+      plugins = with pkgs.vimPlugins; [
+        nvim-treesitter.withAllGrammars
+      ];
 
-      # Tools required
-      ripgrep
-      fd
-      fzf
+      extraPackages = with pkgs; [
+        # Treesitter Build tools
+        tree-sitter
+        gcc
+        gnumake
 
-      # Language Servers and Formatters
-      # Lua
-      lua-language-server
-      stylua
+        # Tools required
+        ripgrep
+        fd
+        fzf
 
-      # Nix
-      nixd
-      nixfmt
-    ];
+        # Language Servers and Formatters
+        # Lua
+        lua-language-server
+        stylua
+
+        # Nix
+        nixd
+        nixfmt
+      ];
+
+      withPython3 = false;
+      withRuby = false;
+    };
 
     home.sessionVariables = {
       EDITOR = "nvim";
