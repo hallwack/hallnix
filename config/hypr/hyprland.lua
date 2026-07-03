@@ -1,1 +1,9 @@
-
+require("modules.monitors")
+require("modules.env")
+require("modules.look_and_feel")
+require("modules.input")
+require("modules.workspaces")
+require("modules.windowrules")
+require("modules.keybindings")
+require("modules.autostart")
+require("modules.permissions")

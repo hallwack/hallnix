@@ -1,0 +1,16 @@
+local programs = require("modules.programs")
+
+hl.on("hyprland.start", function()
+	hl.exec_cmd("kitty")
+
+	hl.exec_cmd("hyprpaper")
+	hl.exec_cmd(programs.bar)
+	hl.exec_cmd(programs.rog)
+	hl.exec_cmd("wl-paste --type text --watch cliphist store")
+	hl.exec_cmd("wl-paste --type image --watch cliphist store")
+	hl.exec_cmd("nm-applet --indicator")
+	hl.exec_cmd("systemctl --user start hyprpolkitagent")
+	hl.exec_cmd("hyprsunset -t 5000")
+	hl.exec_cmd("/home/matteo/.config/hypr/scripts/switch_theme.sh minimal")
+	hl.exec_cmd("rm -f $XDG_RUNTIME_DIR/wob.fifo && mkfifo $XDG_RUNTIME_DIR/wob.fifo")
+end)
