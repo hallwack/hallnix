@@ -21,6 +21,6 @@
   hallwack.system.users.enable = true;
 
   hallwack.desktop.gnome.enable = true;
-  hallwack.desktop.hyprland.enable = true;
+  hallwack.desktop.hyprland.enable = false;
   hallwack.desktop.niri.enable = true;
 }
