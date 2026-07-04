@@ -81,12 +81,22 @@ window-rule {
 
 window-rule {
     match app-id="helium"
-    match app-id="spotify"
     match app-id="code"
-    match app-id="ferdium"
+    match app-id="obsidian"
     
     default-column-width {
         proportion 1.0
+    }
+}
+
+window-rule {
+    match app-id="spotify"
+    match app-id="ferdium"
+    match app-id="kitty"
+    match app-id="ghostty"
+    
+    default-column-width {
+        proportion 0.60
     }
 }
 
