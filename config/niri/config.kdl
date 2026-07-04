@@ -82,6 +82,7 @@ window-rule {
 window-rule {
     match app-id="helium"
     match app-id="code"
+    match app-id="dev.zed.Zed"
     match app-id="obsidian"
     
     default-column-width {
