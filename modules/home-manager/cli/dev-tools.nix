@@ -8,9 +8,35 @@
   options.hallwack.cli.devtools.enable = lib.mkEnableOption "Enable hallwack cli devtools module";
 
   config = lib.mkIf config.hallwack.cli.devtools.enable {
-    programs.fastfetch.enable = true;
+    programs.fastfetch = {
+      enable = true;
+      settings = {
+        modules = [
+          "title"
+          "separator"
+          "os"
+          "host"
+          "kernel"
+          "shell"
+          "packages"
+          "uptime"
+          "break"
+          "cpu"
+          "gpu"
+          "memory"
+          "disk"
+          "break"
+          "de"
+          "wm"
+          "theme"
+          "terminal"
+          "break"
+          "colors"
+        ];
+      };
+    };
 
-    home.file.".config/fastfetch/config.jsonc".text = ''
+    /* home.file.".config/fastfetch/config.jsonc".text = ''
       {
         "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
         "modules": [
@@ -36,6 +62,6 @@
           "colors"
         ]
       }
-    '';
+    ''; */
   };
 }
