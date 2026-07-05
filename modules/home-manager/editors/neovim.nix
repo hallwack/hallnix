@@ -26,19 +26,10 @@
         gcc
         gnumake
 
-        # Tools required
-        ripgrep
-        fd
-        fzf
-
         # Language Servers and Formatters
         # Lua
         lua-language-server
         stylua
-
-        # Nix
-        nixd
-        nixfmt
       ];
 
       withPython3 = false;

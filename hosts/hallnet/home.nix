@@ -13,6 +13,7 @@
   hallwack.cli.devtools.enable = true;
   hallwack.cli.git.enable = true;
   hallwack.cli.gpg.enable = true;
+  hallwack.cli.nix.enable = true;
   hallwack.cli.nodejs.enable = true;
   hallwack.cli.rust.enable = true;
   hallwack.cli.shell.enable = true;

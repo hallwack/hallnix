@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   repoRoot,
   ...
 }:
@@ -9,6 +10,13 @@
   options.hallwack.cli.devtools.enable = lib.mkEnableOption "Enable hallwack cli devtools module";
 
   config = lib.mkIf config.hallwack.cli.devtools.enable {
+    home.packages = with pkgs; [
+      ripgrep
+      fd
+    ];
+
+    programs.fzf.enableZshIntegration = true;
+
     programs.fastfetch = {
       enable = true;
       settings = {
