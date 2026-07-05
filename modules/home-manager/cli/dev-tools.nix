@@ -13,9 +13,8 @@
     home.packages = with pkgs; [
       ripgrep
       fd
+      fzf
     ];
-
-    programs.fzf.enableZshIntegration = true;
 
     programs.fastfetch = {
       enable = true;
