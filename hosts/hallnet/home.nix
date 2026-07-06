@@ -21,6 +21,7 @@
   hallwack.desktop.niri.enable = true;
   hallwack.desktop.noctalia.enable = true;
 
+  hallwack.editors.antigravity.enable = true;
   hallwack.editors.neovim.enable = true;
 
   hallwack.terminal.kitty.enable = true;
