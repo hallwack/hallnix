@@ -11,6 +11,7 @@
   };
 
   hallwack.cli.devtools.enable = true;
+  hallwack.cli.docker.enable = true;
   hallwack.cli.git.enable = true;
   hallwack.cli.gpg.enable = true;
   hallwack.cli.nix.enable = true;

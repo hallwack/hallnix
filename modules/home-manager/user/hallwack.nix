@@ -20,7 +20,6 @@
       };
 
       packages = with pkgs; [
-        docker
         vscode
         bat
         dbeaver-bin

@@ -15,6 +15,7 @@
     users.users.hallwack = {
       isNormalUser = true;
       extraGroups = [
+        "docker"
         "wheel"
         "networkmanager"
         "audio"
