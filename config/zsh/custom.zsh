@@ -167,4 +167,5 @@ mkcp() {
 
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
+fastfetch -l nixos --logo-type small -s title:os:kernel:uptime:shell:memory
 # eval "$(fnm env --use-on-cd)"
