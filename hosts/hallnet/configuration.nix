@@ -10,6 +10,7 @@
   networking.hostName = hostname;
   nixpkgs.config.allowUnfree = true;
 
+  hallwack.services.docker.enable = true;
   hallwack.services.openssh.enable = true;
 
   hallwack.system.audio.enable = true;
