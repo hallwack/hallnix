@@ -37,6 +37,7 @@
       apple-cursor
       brave
       wl-clipboard
+      networkmanagerapplet
     ];
   };
 }
