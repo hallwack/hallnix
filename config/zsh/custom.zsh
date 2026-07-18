@@ -128,6 +128,29 @@ function zvm_after_init() {
   bindkey -M vicmd 'P' zvm_vi_put_before
 }
 
+function hg() {
+  local result key cmd
+          
+  # Baris fzf digabungkan menjadi satu line utuh agar aman dari error parser
+  result=$(history | fzf --tac +s --tiebreak=index --expect=ctrl-e --preview 'echo {}' | sed -E 's/^[[:space:]]*[0-9]+[*[:space:]]*//')
+  
+  # Jika batal (Esc ditekan), langsung keluar
+  [[ -z "$result" ]] && return
+  
+  # Membaca hasil fzf (--expect memberikan tombol di baris ke-1, teks di baris ke-2+)
+  key=$(echo "$result" | head -n1)
+  cmd=$(echo "$result" | tail -n +2)
+  
+  if [[ "$key" == "ctrl-e" ]]; then
+    # Ctrl+E ditekan -> Eksekusi langsung
+    print -s "$cmd"
+    eval "$cmd"
+  else
+    # Enter ditekan -> Lempar ke prompt Zsh untuk diedit
+    print -z "$cmd"
+  fi
+}
+
 # fnm (js)
 FNM_PATH="/home/hallwack/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then

@@ -55,7 +55,7 @@
         lgit = "lazygit";
         ldock = "lazydocker";
         switch = "sudo nixos-rebuild switch --flake ${repoRoot}#hallnet";
-        hg = "history | fzf --tac +s --tiebreak=index --preview 'echo {}' | awk '{print \$1}' | xargs -r zsh -c 'cd \$(history -p \!\!) && exec \$SHELL'";
+        # hg = "history | fzf --tac +s --tiebreak=index --preview 'echo {}' | awk '{print \$1}' | xargs -r zsh -c 'cd \$(history -p \!\!) && exec \$SHELL'";
       };
       history = {
         size = 10000;
