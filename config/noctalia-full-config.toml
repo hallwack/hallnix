@@ -20,15 +20,29 @@ order = [ "default" ]
     border_width = 0.0
     capsule = false
     capsule_fill = "surface"
+    capsule_group = []
     capsule_opacity = 1.0
     capsule_padding = 10.0
     capsule_thickness = 0.69999998807907104
     center = [ "Clock_Date" ]
     contact_shadow = false
     enabled = true
-    end = [ "group:g5", "group:g3", "group:g1", "settings", "session" ]
+    end = [
+        "network_rx",
+        "network_tx",
+        "tray",
+        "notifications",
+        "brightness",
+        "volume",
+        "battery",
+        "network",
+        "bluetooth",
+        "settings",
+        "session"
+    ]
     font_family = "SF Pro Display"
     font_weight = 500
+    hover_highlight = true
     layer = "top"
     margin_edge = 8
     margin_ends = 12
@@ -45,9 +59,9 @@ order = [ "default" ]
     scale = 1.0
     shadow = false
     show_on_workspace_switch = true
-    start = [ "workspaces", "group:g4", "group:g2" ]
+    start = [ "workspaces", "audio_visualizer", "media_2", "temp", "cpu", "ram" ]
     thickness = 36
-    widget_spacing = 10
+    widget_spacing = 8
 
         [bar.default.dead_zone]
         command = ""
@@ -55,41 +69,6 @@ order = [ "default" ]
         right_command = ""
         scroll_down_command = ""
         scroll_up_command = ""
-
-        [[bar.default.capsule_group]]
-        fill = "surface"
-        id = "g1"
-        members = [ "battery", "network", "bluetooth" ]
-        opacity = 1.0
-        padding = 14.0
-
-        [[bar.default.capsule_group]]
-        fill = "surface"
-        id = "g2"
-        members = [ "temp", "cpu", "ram" ]
-        opacity = 1.0
-        padding = 12.0
-
-        [[bar.default.capsule_group]]
-        fill = "surface"
-        id = "g3"
-        members = [ "brightness", "volume" ]
-        opacity = 1.0
-        padding = 14.0
-
-        [[bar.default.capsule_group]]
-        fill = "surface"
-        id = "g4"
-        members = [ "audio_visualizer", "media_2" ]
-        opacity = 1.0
-        padding = 10.0
-
-        [[bar.default.capsule_group]]
-        fill = "surface"
-        id = "g5"
-        members = [ "tray", "notifications" ]
-        opacity = 1.0
-        padding = 10.0
 
 [battery]
 warning_threshold = 20
@@ -109,6 +88,9 @@ hidden_tabs = []
 sidebar = "compact"
 sidebar_section = "compact"
 width = 700
+
+    [control_center.calendar]
+    show_events_card = true
 
     [[control_center.shortcuts]]
     type = "wifi"
@@ -141,34 +123,35 @@ schema_version = 1
 active_monitor_only = false
 active_opacity = 1.0
 active_scale = 1.0
-auto_hide = false
-background_opacity = 0.87999999523162842
-cross_axis_padding = 8
+auto_hide = true
+background_opacity = 0.39999997615814209
+concave_edge_corners = false
+cross_axis_padding = 4
 enabled = false
-icon_size = 48
+icon_size = 24
 inactive_opacity = 0.85000002384185791
 inactive_scale = 0.85000002384185791
-item_spacing = 6
+item_spacing = 16
 launcher_custom_image = ""
 launcher_custom_image_colorize = false
 launcher_icon = "grid-dots"
-launcher_position = "none"
+launcher_position = "start"
 magnification = true
-magnification_scale = 1.4500000476837158
-main_axis_padding = 16
-margin_edge = 8
+magnification_scale = 1.5499999523162842
+main_axis_padding = 4
+margin_edge = 4
 margin_ends = 0
 monitors = []
 pinned = []
 position = "bottom"
-radius = 16
+radius = 12
 radius_bottom_left = 16
 radius_bottom_right = 16
 radius_top_left = 16
 radius_top_right = 16
 reserve_space = false
 shadow = true
-show_dots = false
+show_dots = true
 show_instance_count = true
 show_running = true
 
@@ -208,23 +191,23 @@ pre_action_fade_seconds = 5.0
     command = ""
     enabled = true
     resume_command = ""
-    timeout = 900.0
+    timeout = 1500.0
 
     [idle.behavior.screen-off]
     action = "screen_off"
     command = ""
     enabled = true
     resume_command = ""
-    timeout = 660.0
+    timeout = 900.0
 
 [keybinds]
 cancel = [ "Escape" ]
-down = [ "Ctrl+j", "Ctrl+n" ]
+down = [ "Ctrl+j", "Down" ]
 left = [ "Left", "Ctrl+h" ]
 right = [ "Right", "Ctrl+l" ]
 tab_next = [ "Tab" ]
 tab_previous = [ "Shift+ISO_Left_Tab" ]
-up = [ "Ctrl+k", "Ctrl+p" ]
+up = [ "Ctrl+k", "Up" ]
 validate = [ "Return", "KP_Enter" ]
 
 [location]
@@ -255,15 +238,15 @@ widget_order = [
 ]
 
     [lockscreen_widgets.grid]
-    cell_size = 64
+    cell_size = 8
     major_interval = 4
     visible = true
 
     [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
-    box_height = 64.0
-    box_width = 416.0
+    box_height = 112.0
+    box_width = 448.0
     cx = 960.0
-    cy = 956.0
+    cy = 964.0
     enabled = true
     output = "eDP-1"
     rotation = 0.0
@@ -395,7 +378,7 @@ scale = 1.0
     keyboard_layout = true
     lock_keys = true
     media = true
-    nightlight = true
+    nightlight = false
     power_profile = true
     privacy = true
     volume = true
@@ -422,7 +405,7 @@ enabled = [ "noctalia/screen_recorder", "noctalia/bongocat" ]
 
 [shell]
 app_icon_colorize = false
-avatar_path = ""
+avatar_path = "/home/hallwack/Downloads/kindpng_1600254.png"
 clipboard_auto_paste = "off"
 clipboard_confirm_clear_history = true
 clipboard_enabled = true
@@ -431,6 +414,7 @@ clipboard_image_action_command = ""
 corner_radius_scale = 1.0
 date_format = "%A, %x %Y"
 disable_mipmaps = false
+external_ip_enabled = false
 font_family = "SF Pro Display"
 launch_apps_as_systemd_services = false
 launch_apps_custom_command = ""
@@ -440,7 +424,7 @@ offline_mode = false
 password_style = "default"
 polkit_agent = true
 screen_time_enabled = false
-settings_show_advanced = true
+settings_show_advanced = false
 setup_wizard_enabled = true
 shared_gl_context = true
 show_location = true
@@ -494,6 +478,7 @@ ui_scale = 1.0
     [shell.privacy]
     cam_filter_regex = ""
     mic_filter_regex = ""
+    screen_filter_regex = ""
 
     [shell.screen_corners]
     enabled = false
@@ -603,8 +588,8 @@ source = "wallpaper"
 wallpaper_scheme = "m3-tonal-spot"
 
     [theme.templates]
-    builtin_ids = []
-    community_ids = []
+    builtin_ids = [ "niri" ]
+    community_ids = [ "zed" ]
     enable_builtin_templates = true
     enable_community_templates = true
 
@@ -656,6 +641,10 @@ type = "noctalia/bongocat:cat"
 
 [widget.cat_2]
 tappy_mode = true
+type = "noctalia/bongocat:cat"
+
+[widget.cat_3]
+scale = 1.3500000000000001
 type = "noctalia/bongocat:cat"
 
 [widget.cpu]
