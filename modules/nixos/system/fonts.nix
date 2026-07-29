@@ -17,6 +17,9 @@
       nerd-fonts.iosevka
       nerd-fonts.symbols-only
 
+      ioskeley-mono.normal-NL-NF
+      ioskeley-mono.normal-term-NF
+
       inter
 
       appleFonts.sf-pro
