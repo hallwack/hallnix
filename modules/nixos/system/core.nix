@@ -38,6 +38,7 @@
       tree
       btop
       libnotify
+      gnumake
     ];
 
     system.stateVersion = "25.05";
