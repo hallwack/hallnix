@@ -103,7 +103,8 @@ plugins=(git web-search)
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 export LOCAL_BIN="$HOME/.local/bin"
-export PATH="$LOCAL_BIN:$PATH"
+export NPM_GLOBAL="$HOME/.npm-packages/bin"
+export PATH="$NPM_GLOBAL:$LOCAL_BIN:$PATH"
 
 ZVM_SYSTEM_CLIPBOARD_ENABLED=true
 
