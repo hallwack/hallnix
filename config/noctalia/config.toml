@@ -387,7 +387,7 @@ scale = 1.0
     wifi = true
 
 [plugins]
-enabled = [ "noctalia/screen_recorder", "noctalia/bongocat" ]
+enabled = [ "noctalia/screen_recorder", "noctalia/bongocat", "noctalia/timer", "thepunkoff/pomodoro" ]
 
     [[plugins.source]]
     auto_update = false
