@@ -41,6 +41,8 @@
       gnumake
     ];
 
+    nix.settings.trusted-users = [ "root" "@wheel" "hallwack" ];
+
     system.stateVersion = "25.05";
   };
 }
