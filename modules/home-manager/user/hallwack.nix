@@ -29,8 +29,7 @@
         spotify
         jq
         obsidian
-        ferdium
-        zoom-us
+        obs-studio
 
         inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default
         inputs.zennotes.packages.${pkgs.stdenv.hostPlatform.system}.zennotes-desktop
