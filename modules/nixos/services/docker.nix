@@ -5,7 +5,5 @@
 
   config = lib.mkIf config.hallwack.services.docker.enable {
     virtualisation.docker.enable = true;
-
-    networking.firewall.allowedTCPPorts = [ 8000 ];
   };
 }
