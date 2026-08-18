@@ -27,7 +27,6 @@
     ];
 
     environment.systemPackages = with pkgs; [
-      brave
       wl-clipboard
       apple-cursor
       pcsc-tools

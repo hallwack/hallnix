@@ -31,6 +31,7 @@
         gnomeExtensions.blur-my-shell
         gnome-tweaks
         codex
+        brave
       ];
     };
   };

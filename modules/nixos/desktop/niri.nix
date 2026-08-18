@@ -35,7 +35,6 @@
       brightnessctl
       playerctl
       apple-cursor
-      brave
       wl-clipboard
       networkmanagerapplet
     ];
