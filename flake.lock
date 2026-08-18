@@ -1080,11 +1080,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1786131058,
-        "narHash": "sha256-oJFNCWsxb8C+f3KG0gsQwEeAqMpo73Ij+zYpLboy2Hg=",
+        "lastModified": 1786998899,
+        "narHash": "sha256-2+adomBMJBrL7TXwFRE/H45CpJDW6+AhW/dNoHsTdFM=",
         "owner": "ZenNotes",
         "repo": "zennotes",
-        "rev": "5efd24e09839cfde505f1894356e6a74a4f674bf",
+        "rev": "595d7bbacd707a88ebd5064ec60d866ba4484623",
         "type": "github"
       },
       "original": {
