@@ -32,7 +32,9 @@
         gnomeExtensions.blur-my-shell
         gnome-tweaks
         codex
+        opencode
         brave
+        libreoffice
       ];
     };
   };
