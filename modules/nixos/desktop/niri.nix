@@ -37,6 +37,10 @@
       apple-cursor
       wl-clipboard
       networkmanagerapplet
+
+      grim
+      slurp
+      satty
     ];
   };
 }
